@@ -1,0 +1,16 @@
+<svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+
+ <title/>
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="258" width="258" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <polyline stroke="#bb7cff" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" fill="none" id="svg_1" points="121.93983321089308,157.28257751464844 201.80331035077688,93.59977319452992 212.44533600702925,41.03762339462264 160.88798439622042,51.88704090926876 98.42259216308594,133.30701716199837 " class="cls-1"/>
+  <path stroke="#bb7cff" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" fill="none" id="svg_2" d="m108.964504,197.592701l23.995984,-12.949926a154.772451,157.747544 0 0 0 -64.364537,-65.601775l-12.705692,24.457244a127.563836,130.015915 0 0 1 53.074245,54.094458z" class="cls-1"/>
+  <polyline stroke="#bb7cff" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" fill="none" id="svg_3" points="73.54210948944092,160.38554096221924 35.111735343933105,201.6880922317505 56.14852428436279,224.29711627960205 94.57889080047607,182.9945650100708 " class="cls-1"/>
+  <text font-style="italic" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Arvo, sans-serif" font-size="25" id="svg_4" y="23.88022" x="25.852477" stroke-opacity="null" stroke-width="0" stroke="#bb7cff" fill="#ffffff">Mobs Drop Loot</text>
+  <text font-style="italic" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Arvo, sans-serif" font-size="25" id="svg_5" y="245.110446" x="88.528037" stroke-opacity="null" stroke-width="0" stroke="#bb7cff" fill="#ffffff">+Difficulty</text>
+ </g>
+</svg>

@@ -77,19 +77,19 @@ namespace SacrificeRemix
             var SectionInteractablesChances = "3.1 Interactables.Chances";
 
             // General
-            MonsterSpawnDifficulty = SrConfig.Bind<float>(SectionGeneral, "MonsterSpawnDifficulty", 1.5f, "A periodic multiplier to scale the monster spawn difficulty. Default is 1. Example: 1.5 = 50% more difficult.");
+            MonsterSpawnDifficulty = SrConfig.Bind<float>(SectionGeneral, "MonsterSpawnDifficulty", 1.5f, "A periodic multiplier to scale the monster spawn difficulty. Default is 1. Example: 1.5 = 50% faster scaling.");
             // Chances
-            NormalDropChance = SrConfig.Bind<float>(SectionChances, "NormalDropChance", 3, "Percent chance for normal monsters to drop an item. 0 to disable.");
+            NormalDropChance = SrConfig.Bind<float>(SectionChances, "NormalDropChance", 4, "Percent chance for normal monsters to drop an item. 0 to disable.");
             EliteDropChance = SrConfig.Bind<float>(SectionChances, "EliteDropChance", 5, "Percent chance for elite monsters to drop an item. 0 to disable.");
-            BossDropChance = SrConfig.Bind<float>(SectionChances, "BossDropChance", 7, "Percent chance for bosses to drop an item. 0 to disable.");
+            BossDropChance = SrConfig.Bind<float>(SectionChances, "BossDropChance", 8, "Percent chance for bosses to drop an item. 0 to disable.");
             CloversRerollDrops = SrConfig.Bind<bool>(SectionChances, "CloversRerollDrops", true, "Can clovers reroll the chance of an item dropping.");
             CloversRerollRarity = SrConfig.Bind<bool>(SectionChances, "CloversRerollRarity", true, "Can clovers reroll the rarity of an item that's dropping (e.g. increased chance for red or green).");
             // Chances.Normal            
             NormalGreenItemChance = SrConfig.Bind<float>(SectionChancesNormal, "GreenItem", 25, "Percent chance for normal monsters to roll uncommon item.");
             NormalRedItemChance = SrConfig.Bind<float>(SectionChancesNormal, "RedItem", 5, "Percent chance for normal monsters to roll legendary item.");
             // Chances.Elite
-            EliteGreenItemChance = SrConfig.Bind<float>(SectionChancesElite, "GreenItem", 45, "Percent chance for elite monsters to roll uncommon item.");
-            EliteRedItemChance = SrConfig.Bind<float>(SectionChancesElite, "RedItem", 5, "Percent chance for elite monsters to roll legendary item.");
+            EliteGreenItemChance = SrConfig.Bind<float>(SectionChancesElite, "GreenItem", 44, "Percent chance for elite monsters to roll uncommon item.");
+            EliteRedItemChance = SrConfig.Bind<float>(SectionChancesElite, "RedItem", 6, "Percent chance for elite monsters to roll legendary item.");
             // Chances.Boss
             BossGreenItemChance = SrConfig.Bind<float>(SectionChancesBoss, "GreenItem", 90, "Percent chance for bosses to roll uncommon item.");
             BossRedItemChance = SrConfig.Bind<float>(SectionChancesBoss, "RedItem", 10, "Percent chance for bosses to roll legendary item.");

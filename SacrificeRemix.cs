@@ -6,7 +6,7 @@ using UnityEngine;
 namespace SacrificeRemix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.0.0")]
+    [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.0.2")]
     public sealed class SacrificeRemix : BaseUnityPlugin
     {
         private static DropHandler DropHandler;
