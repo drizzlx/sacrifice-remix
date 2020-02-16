@@ -1,0 +1,7 @@
+﻿{
+    "name": "SacrificeRemix",
+    "version_number": "1.0.1",
+    "website_url": "https://github.com/drizzlx/sacrifice-remix",
+    "description": "Risk of Rain 1's Sacrifice artifact with a twist.",
+    "dependencies": [ "bbepis-BepInExPack-3.0.0" , "tristanmcpherson-R2API-2.3.22" ]
+}
