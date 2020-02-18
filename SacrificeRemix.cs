@@ -9,39 +9,45 @@ namespace SacrificeRemix
     [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.0.2")]
     public sealed class SacrificeRemix : BaseUnityPlugin
     {
-        private static DropHandler DropHandler;
-        private static Interactables Interactables;
-        private float monsterCreditInterval = 20;
+        private readonly float minMonsterCreditInterval = 15;
+        private readonly float maxMonsterCreditInterval = 30;
         private float monsterCreditTimer = 0;
+        private Configurations configs;
 
         // Called when loaded by BepInEx.
         private void Awake()
         {
-            // Load configs first
-            var srConfig = new Configurations();
-
-            // Init dependencies                        
-            DropHandler = new DropHandler();
-            Interactables = new Interactables();            
+            // Init configs
+            configs = Configurations.Instance();                  
 
             // Handler: Monster spawn rate
             On.RoR2.CombatDirector.Simulate += (orig, self, deltaTime) =>
             {
-
-                monsterCreditTimer -= deltaTime;
-
-                if (monsterCreditTimer < 0)
+                if (!IsModuleEnabled())
                 {
-                    self.monsterCredit *= Configurations.MonsterSpawnDifficulty.Value;
-                    monsterCreditTimer = monsterCreditInterval;
-
-                    //Chat.AddMessage("Credit: " + self.monsterCredit);
+                    orig(self, deltaTime);
+                    return;
                 }
-                
-                //self.minSeriesSpawnInterval = 0.1f;
-                //self.maxSeriesSpawnInterval = 1;                
-                //self.minRerollSpawnInterval = 0.1f;
-                //self.maxRerollSpawnInterval = 1;
+
+                // Reduce timer
+                monsterCreditTimer -= deltaTime;
+                // Check if enough time has passed
+                if (monsterCreditTimer < 0)
+                {         
+                    // Calculate credit multiplier
+                    float additionalPlayers = NetworkUser.readOnlyInstancesList.Count - 1f;                   
+                    float creditMultiplier = configs.MobDifficultyRate.Value / 100;                    
+                    creditMultiplier += additionalPlayers * (configs.MobDifficultyRatePerPlayer.Value / 100);
+                    // Apply credit multiplier
+                    self.monsterCredit *= creditMultiplier;
+                    // Reset timer
+                    monsterCreditTimer = Random.Range(minMonsterCreditInterval, maxMonsterCreditInterval);
+
+                    if (configs.IsDeveloperMode.Value)
+                    {
+                        Chat.AddMessage("Spawn Credit: " + self.monsterCredit + "; " + "Rate: " + (creditMultiplier * 100) + "%");
+                    }                 
+                }               
 
                 orig(self, deltaTime);
             };
@@ -49,12 +55,18 @@ namespace SacrificeRemix
             // Handler: Monster loot rewards
             On.RoR2.DeathRewards.OnKilledServer += (orig, self, damageReport) =>
             {
+                if (!IsModuleEnabled())
+                {
+                    orig.Invoke(self, damageReport);
+                    return;
+                }
+
                 CharacterBody attackerBody = damageReport.attackerBody;
                 CharacterBody victimBody = damageReport.victimBody;
 
                 if (attackerBody && victimBody && !victimBody.isPlayerControlled)
                 {
-                    DropHandler.DropLoot(victimBody, attackerBody);
+                    DropHandler.Instance().DropLoot(victimBody, attackerBody);
                 }
 
                 orig.Invoke(self, damageReport);
@@ -62,8 +74,8 @@ namespace SacrificeRemix
 
             // Handler: Interactables
             On.RoR2.ClassicStageInfo.GenerateDirectorCardWeightedSelection += (orig, self, categorySelection) =>
-            {
-                if (!Interactables.IsInteractableCategorySelection(categorySelection))
+            {                
+                if (!IsModuleEnabled() || !Interactables.Instance().IsInteractableCategorySelection(categorySelection))
                 {
                     return orig.Invoke(self, categorySelection);
                 }
@@ -79,7 +91,7 @@ namespace SacrificeRemix
                         // True if interactable is enabled
                         if (Interactables.ApplyConfigModifiers(directorCard))
                         {
-                            directorCard.spawnCard.directorCreditCost = Mathf.RoundToInt((float)directorCard.cost * Configurations.InteractableCostMultiplier.Value);
+                            directorCard.spawnCard.directorCreditCost = Mathf.RoundToInt(directorCard.cost * configs.InteractableCostMultiplier.Value);
 
                             weightedSelection.AddChoice(directorCard, (float)directorCard.selectionWeight / num * category.selectionWeight);
                         }
@@ -92,10 +104,16 @@ namespace SacrificeRemix
             // Handler: Interactables spawn multiplier
             On.RoR2.SceneDirector.PopulateScene += (orig, self) =>
             {
-                int num = Reflection.GetFieldValue<int>(self, "interactableCredit");
-                num = Mathf.RoundToInt((float)num * Configurations.InteractableSpawnMultiplier.Value);
+                if (!IsModuleEnabled())
+                {
+                    orig.Invoke(self);
+                    return;
+                }
 
-                Reflection.SetFieldValue<int>(self, "interactableCredit", num);
+                int num = Reflection.GetFieldValue<int>(self, "interactableCredit");
+                num = Mathf.RoundToInt(num * configs.InteractableSpawnMultiplier.Value);
+
+                Reflection.SetFieldValue(self, "interactableCredit", num);
                 orig.Invoke(self);
             };
         }
@@ -103,7 +121,22 @@ namespace SacrificeRemix
         // Called at the first frame of the game.
         private void Start()
         {
-            Chat.AddMessage("Welcome to Sacrifice Remix! Don't forget to smoke up.");
+            if (IsModuleEnabled())
+            {
+                Chat.AddMessage("SacrificeRemix: Welcome! Please submit feedback on Discord: drizzlx#8615");
+            }            
+        }
+
+        private bool IsModuleEnabled()
+        {
+            return Configurations.Instance().IsModuleEnabled.Value;
+        }
+
+        [ConCommand(commandName = "sr_reload", flags = ConVarFlags.None, helpText = "SacrificeRemix: Reload the config file.")]
+        private static void CCReloadConfig(ConCommandArgs args)
+        {
+            Configurations.Instance().Reload();
+            Console.print("Reloaded SacrificeRemix config file.");
         }
     }
 }

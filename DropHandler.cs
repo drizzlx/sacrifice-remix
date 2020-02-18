@@ -5,30 +5,33 @@ using UnityEngine;
 namespace SacrificeRemix
 {    
     class DropHandler
-    {        
+    {
+        private static DropHandler instance;
+        private readonly Configurations configs = Configurations.Instance();
+
         public void DropLoot(CharacterBody victimBody, CharacterBody attackerBody)
         {
             float chanceToDropItem;
-            string victimType;
+            string victimType;           
 
             if (victimBody.isElite)
             {
                 victimType = "elite";
-                chanceToDropItem = Configurations.EliteDropChance.Value;
+                chanceToDropItem = configs.EliteDropChance.Value;
             }
             else if (victimBody.isBoss)
             {
                 victimType = "boss";
-                chanceToDropItem = Configurations.BossDropChance.Value;
+                chanceToDropItem = configs.BossDropChance.Value;
             }
             else
             {
                 victimType = "normal";
-                chanceToDropItem = Configurations.NormalDropChance.Value;
+                chanceToDropItem = configs.NormalDropChance.Value;
             }
 
             // Check if item should drop
-            var canDropItem = getCloversRerollDrops() ? Util.CheckRoll(chanceToDropItem, attackerBody.master) : Util.CheckRoll(chanceToDropItem);
+            var canDropItem = configs.CloversRerollDrops.Value ? Util.CheckRoll(chanceToDropItem, attackerBody.master) : Util.CheckRoll(chanceToDropItem);
             
             if (chanceToDropItem <= 0 || !canDropItem)
             {
@@ -63,6 +66,8 @@ namespace SacrificeRemix
 
         private PickupIndex RollItem(string victimType, CharacterMaster master)
         {
+            var configs = Configurations.Instance();
+            // Drops
             List<PickupIndex> dropList;
             int itemIndex;
             // Percent chance to drop
@@ -73,22 +78,22 @@ namespace SacrificeRemix
             switch (victimType)
             {
                 case "elite":
-                    greenItemChance = Configurations.EliteGreenItemChance.Value;
-                    redItemChance = Configurations.EliteRedItemChance.Value;
+                    greenItemChance = configs.EliteGreenItemChance.Value;
+                    redItemChance = configs.EliteRedItemChance.Value;
                     break;
                 case "boss":
-                    greenItemChance = Configurations.BossGreenItemChance.Value;
-                    redItemChance = Configurations.BossRedItemChance.Value;
+                    greenItemChance = configs.BossGreenItemChance.Value;
+                    redItemChance = configs.BossRedItemChance.Value;
                     break;
                 default:
-                    greenItemChance = Configurations.NormalGreenItemChance.Value;
-                    redItemChance = Configurations.NormalRedItemChance.Value;
+                    greenItemChance = configs.NormalGreenItemChance.Value;
+                    redItemChance = configs.NormalRedItemChance.Value;
                     break;
             }
             
             // Rarity roll
-            greenItemRoll = getCloversRerollRarity() ? Util.CheckRoll(greenItemChance, master) : Util.CheckRoll(greenItemChance);
-            redItemRoll = getCloversRerollRarity() ? Util.CheckRoll(redItemChance, master) : Util.CheckRoll(redItemChance);
+            greenItemRoll = configs.CloversRerollRarity.Value ? Util.CheckRoll(greenItemChance, master) : Util.CheckRoll(greenItemChance);
+            redItemRoll = configs.CloversRerollRarity.Value ? Util.CheckRoll(redItemChance, master) : Util.CheckRoll(redItemChance);
             // Common chance
             whiteItemChance = 100f - greenItemChance - redItemChance;
 
@@ -111,16 +116,11 @@ namespace SacrificeRemix
             itemIndex = Run.instance.treasureRng.RangeInt(0, dropList.Count);
 
             return dropList[itemIndex];
-        }
+        }        
 
-        private bool getCloversRerollDrops()
+        public static DropHandler Instance()
         {
-            return Configurations.CloversRerollDrops.Value;
-        }
-
-        private bool getCloversRerollRarity()
-        {
-            return Configurations.CloversRerollRarity.Value;
+            return instance ?? (instance = new DropHandler());
         }
     }
 }

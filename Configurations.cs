@@ -1,137 +1,176 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using System;
+using System.IO;
 
 namespace SacrificeRemix
 {
     class Configurations
     {
-        // Custom configuration file
-        private static ConfigFile SrConfig { get; set; }
-        // General
-        public static ConfigEntry<float> MonsterSpawnDifficulty { get; set; }       
-        // Chances
-        public static ConfigEntry<float> NormalDropChance { get; set; }
-        public static ConfigEntry<float> EliteDropChance { get; set; }
-        public static ConfigEntry<float> BossDropChance { get; set; }
-        public static ConfigEntry<bool> CloversRerollDrops { get; set; }
-        public static ConfigEntry<bool> CloversRerollRarity { get; set; }
-        // Chances.Normal
-        public static ConfigEntry<float> NormalWhiteItemChance { get; set; }
-        public static ConfigEntry<float> NormalGreenItemChance { get; set; }
-        public static ConfigEntry<float> NormalRedItemChance { get; set; }
-        // Chances.Elite
-        public static ConfigEntry<float> EliteWhiteItemChance { get; set; }
-        public static ConfigEntry<float> EliteGreenItemChance { get; set; }
-        public static ConfigEntry<float> EliteRedItemChance { get; set; }
-        // Chances.Boss
-        public static ConfigEntry<float> BossWhiteItemChance { get; set; }
-        public static ConfigEntry<float> BossGreenItemChance { get; set; }
-        public static ConfigEntry<float> BossRedItemChance { get; set; }
-        // Interactables
-        public static ConfigEntry<float> InteractableSpawnMultiplier { get; set; }
-        public static ConfigEntry<float> InteractableCostMultiplier { get; set; }    
-        // Interactables.Chances
-        public static ConfigEntry<float> ChestSmallChance { get; set; }
-        public static ConfigEntry<float> ChestLargeChance { get; set; }
-        public static ConfigEntry<float> ChestDamageChance { get; set; }
-        public static ConfigEntry<float> ChestHealingChance { get; set; }
-        public static ConfigEntry<float> ChestUtilityChance { get; set; }
-        public static ConfigEntry<float> ChestGoldChance { get; set; }
-        public static ConfigEntry<float> ChestLunarChance { get; set; }
-        public static ConfigEntry<float> ChestStealthedChance { get; set; }
-        public static ConfigEntry<float> EquipmentBarrelChance { get; set; }
-        public static ConfigEntry<float> TripleShopSmallChance { get; set; }
-        public static ConfigEntry<float> TripleShopLargeChance { get; set; }
-        public static ConfigEntry<float> BarrelChance { get; set; }
-        public static ConfigEntry<float> ShrineHealingChance { get; set; }
-        public static ConfigEntry<float> ShrineBloodChance { get; set; }
-        public static ConfigEntry<float> ShrineBossChance { get; set; }
-        public static ConfigEntry<float> ShrineChanceChance { get; set; }
-        public static ConfigEntry<float> ShrineCombatChance { get; set; }
-        public static ConfigEntry<float> ShrineRestackChance { get; set; }
-        public static ConfigEntry<float> ShrineGoldshoresAccessChance { get; set; }
-        public static ConfigEntry<float> BrokenDrone1Chance { get; set; }
-        public static ConfigEntry<float> BrokenDrone2Chance { get; set; }
-        public static ConfigEntry<float> BrokenMegaDroneChance { get; set; }
-        public static ConfigEntry<float> BrokenMissileDroneChance { get; set; }
-        public static ConfigEntry<float> BrokenEquipmentDroneChance { get; set; }
-        public static ConfigEntry<float> BrokenFlameDroneChance { get; set; }
-        public static ConfigEntry<float> BrokenTurretChance { get; set; }
-        public static ConfigEntry<float> DuplicatorSmallChance { get; set; }
-        public static ConfigEntry<float> DuplicatorLargeChance { get; set; }
-        public static ConfigEntry<float> DuplicatorMilitaryChance { get; set; }
-        // Other
-        public static ConfigEntry<float> RadarTowerChance { get; set; }
+        private static Configurations instance;
+        private ConfigFile srConfig;
+        
+        public string SectionGeneral = "1.0 General";        
+        public string SectionDrops = "2.0 Drops";
+        public string SectionDropsNormal = "2.1 Drops.Normal";
+        public string SectionDropsElite = "2.2 Drops.Elite";
+        public string SectionDropsBoss = "2.3 Drops.Boss";
+        public string SectionInteractables = "3.0 Interactables";
+        public string SectionInteractablesChances = "3.1 Interactables.Chances";
+        public string SectionDeveloper = "Developer";
+
+        public ConfigEntry<bool>
+            // General
+            IsModuleEnabled,
+            // Developer
+            IsDeveloperMode,
+            // Drops
+            CloversRerollDrops,
+            CloversRerollRarity;
+
+        public ConfigEntry<float>
+            // General
+            MobDifficultyRate,
+            MobDifficultyRatePerPlayer,
+            // Drops
+            NormalDropChance,
+            EliteDropChance,
+            BossDropChance,
+            // Drops.Normal
+            NormalGreenItemChance,
+            NormalRedItemChance,
+            // Drops.Elite
+            EliteGreenItemChance,
+            EliteRedItemChance,
+            // Drops.Boss
+            BossGreenItemChance,
+            BossRedItemChance,
+            // Interactables
+            InteractableSpawnMultiplier,
+            InteractableCostMultiplier,
+            // Interactables.Chances
+            // - Chests
+            ChestSmallChance,
+            ChestLargeChance,
+            ChestDamageChance,
+            ChestHealingChance,
+            ChestUtilityChance,
+            ChestGoldChance,
+            ChestLunarChance,
+            ChestStealthedChance,
+            EquipmentBarrelChance,
+            TripleShopSmallChance,
+            TripleShopLargeChance,
+            BarrelChance,
+            // - Shrines
+            ShrineHealingChance,
+            ShrineBloodChance,
+            ShrineBossChance,
+            ShrineChanceChance,
+            ShrineCombatChance,
+            ShrineRestackChance,
+            ShrineGoldshoresAccessChance,
+            // - Drones
+            BrokenDrone1Chance,
+            BrokenDrone2Chance,
+            BrokenMegaDroneChance,
+            BrokenMissileDroneChance,
+            BrokenEquipmentDroneChance,
+            BrokenFlameDroneChance,
+            BrokenTurretChance,
+            DuplicatorSmallChance,
+            DuplicatorLargeChance,
+            DuplicatorMilitaryChance,
+            // - Other
+            RadarTowerChance;
 
         public Configurations()
         {
-            SrConfig = new ConfigFile(Paths.ConfigPath + "\\SacrificeRemix.cfg", true);
+            Init();
+        }
+        public static Configurations Instance()
+        {
+            return instance ?? (instance = new Configurations());
+        }
 
-            // Sections
-            var SectionGeneral = "1.0 General";
-            var SectionChances = "2.0 Chances";
-            var SectionChancesNormal = "2.1 Chances.Normal";
-            var SectionChancesElite = "2.2 Chances.Elite";
-            var SectionChancesBoss = "2.3 Chances.Boss";            
-            var SectionInteractables = "3.0 Interactables";
-            var SectionInteractablesChances = "3.1 Interactables.Chances";
+        public void Reload()
+        {
+            srConfig.Reload();
+        }                
 
+        private void Init()
+        {            
+            // Custom config file
+            srConfig = new ConfigFile(Paths.ConfigPath + "\\SacrificeRemix.cfg", true);
+
+            // TODO add a version config value and check
+            //if (File.Exists(configFilePath))
+            //{
+            //    File.Delete(configFilePath);
+            //}
+
+            // Developer            
+            IsDeveloperMode = srConfig.Bind<bool>(SectionDeveloper, "IsDeveloperMode", false, "Enable custom logs for debugging.");
             // General
-            MonsterSpawnDifficulty = SrConfig.Bind<float>(SectionGeneral, "MonsterSpawnDifficulty", 1.5f, "A periodic multiplier to scale the monster spawn difficulty. Default is 1. Example: 1.5 = 50% faster scaling.");
-            // Chances
-            NormalDropChance = SrConfig.Bind<float>(SectionChances, "NormalDropChance", 4, "Percent chance for normal monsters to drop an item. 0 to disable.");
-            EliteDropChance = SrConfig.Bind<float>(SectionChances, "EliteDropChance", 5, "Percent chance for elite monsters to drop an item. 0 to disable.");
-            BossDropChance = SrConfig.Bind<float>(SectionChances, "BossDropChance", 8, "Percent chance for bosses to drop an item. 0 to disable.");
-            CloversRerollDrops = SrConfig.Bind<bool>(SectionChances, "CloversRerollDrops", true, "Can clovers reroll the chance of an item dropping.");
-            CloversRerollRarity = SrConfig.Bind<bool>(SectionChances, "CloversRerollRarity", true, "Can clovers reroll the rarity of an item that's dropping (e.g. increased chance for red or green).");
-            // Chances.Normal            
-            NormalGreenItemChance = SrConfig.Bind<float>(SectionChancesNormal, "GreenItem", 25, "Percent chance for normal monsters to roll uncommon item.");
-            NormalRedItemChance = SrConfig.Bind<float>(SectionChancesNormal, "RedItem", 5, "Percent chance for normal monsters to roll legendary item.");
-            // Chances.Elite
-            EliteGreenItemChance = SrConfig.Bind<float>(SectionChancesElite, "GreenItem", 44, "Percent chance for elite monsters to roll uncommon item.");
-            EliteRedItemChance = SrConfig.Bind<float>(SectionChancesElite, "RedItem", 6, "Percent chance for elite monsters to roll legendary item.");
-            // Chances.Boss
-            BossGreenItemChance = SrConfig.Bind<float>(SectionChancesBoss, "GreenItem", 90, "Percent chance for bosses to roll uncommon item.");
-            BossRedItemChance = SrConfig.Bind<float>(SectionChancesBoss, "RedItem", 10, "Percent chance for bosses to roll legendary item.");
+            IsModuleEnabled = srConfig.Bind<bool>(SectionGeneral, "IsModuleEnabled", true, "Enable or disable the module.");
+            MobDifficultyRate = srConfig.Bind<float>(SectionGeneral, "MobDifficultyRate", 150, "The percent rate at which more difficult mobs spawn; 100 is the default RoR2 rate.");
+            MobDifficultyRatePerPlayer = srConfig.Bind<float>(SectionGeneral, "MobDifficultyRatePerPlayer", 0,
+                "Scale MobDifficultyRate for each additional player (0 to disable). " +
+                "Example: MobDifficultyRate 100 + 25 PerPlayer = 100%/125%/150%/175% with 1/2/3/4 players.");
+            // Drops
+            NormalDropChance = srConfig.Bind<float>(SectionDrops, "NormalDropChance", 4, "Percent chance for normal monsters to drop an item. 0 to disable.");
+            EliteDropChance = srConfig.Bind<float>(SectionDrops, "EliteDropChance", 5, "Percent chance for elite monsters to drop an item. 0 to disable.");
+            BossDropChance = srConfig.Bind<float>(SectionDrops, "BossDropChance", 8, "Percent chance for bosses to drop an item. 0 to disable.");
+            CloversRerollDrops = srConfig.Bind<bool>(SectionDrops, "CloversRerollDrops", true, "Can clovers reroll the chance of an item dropping.");
+            CloversRerollRarity = srConfig.Bind<bool>(SectionDrops, "CloversRerollRarity", true, "Can clovers reroll the rarity of an item that's dropping (e.g. increased chance for red or green).");
+            // Drops.Normal            
+            NormalGreenItemChance = srConfig.Bind<float>(SectionDropsNormal, "GreenItem", 25, "Percent chance for normal monsters to roll uncommon item.");
+            NormalRedItemChance = srConfig.Bind<float>(SectionDropsNormal, "RedItem", 5, "Percent chance for normal monsters to roll legendary item.");
+            // Drops.Elite
+            EliteGreenItemChance = srConfig.Bind<float>(SectionDropsElite, "GreenItem", 44, "Percent chance for elite monsters to roll uncommon item.");
+            EliteRedItemChance = srConfig.Bind<float>(SectionDropsElite, "RedItem", 6, "Percent chance for elite monsters to roll legendary item.");
+            // Drops.Boss
+            BossGreenItemChance = srConfig.Bind<float>(SectionDropsBoss, "GreenItem", 90, "Percent chance for bosses to roll uncommon item.");
+            BossRedItemChance = srConfig.Bind<float>(SectionDropsBoss, "RedItem", 10, "Percent chance for bosses to roll legendary item.");
             // Interactables
-            InteractableSpawnMultiplier = SrConfig.Bind<float>(SectionInteractables, "InteractableSpawnMultipler", 1, "A multiplier on the amount of interactables that will spawn in a level.");
-            InteractableCostMultiplier = SrConfig.Bind<float>(SectionInteractables, "InteractableCostMultiplier", 1, "A multiplier applied to the cost of all interactables.");
+            InteractableSpawnMultiplier = srConfig.Bind<float>(SectionInteractables, "InteractableSpawnMultiplier", 1, "A multiplier on the amount of interactables that will spawn in a level.");
+            InteractableCostMultiplier = srConfig.Bind<float>(SectionInteractables, "InteractableCostMultiplier", 1, "A multiplier applied to the cost of all interactables.");
             // Interactables.Chances
-            // Chests
-            ChestSmallChance = SrConfig.Bind<float>(SectionInteractablesChances, "SmallChest", 1, "The multiplier for this item to spawn.");
-            ChestLargeChance = SrConfig.Bind<float>(SectionInteractablesChances, "LargeChest", 1, "The multiplier for this item to spawn.");
-            ChestDamageChance = SrConfig.Bind<float>(SectionInteractablesChances, "CategoryDamageChest", 1, "The multiplier for this item to spawn.");
-            ChestHealingChance = SrConfig.Bind<float>(SectionInteractablesChances, "CategoryHealingChest", 1, "The multiplier for this item to spawn.");
-            ChestUtilityChance = SrConfig.Bind<float>(SectionInteractablesChances, "CategoryUtilityChest", 1, "The multiplier for this item to spawn.");
-            ChestGoldChance = SrConfig.Bind<float>(SectionInteractablesChances, "GoldChest", 1, "The multiplier for this item to spawn.");
-            ChestLunarChance = SrConfig.Bind<float>(SectionInteractablesChances, "LunarChest", 1, "The multiplier for this item to spawn.");
-            ChestStealthedChance = SrConfig.Bind<float>(SectionInteractablesChances, "StealthedChest", 1, "The multiplier for this item to spawn.");
-            EquipmentBarrelChance = SrConfig.Bind<float>(SectionInteractablesChances, "EquipmentBarrel", 1, "The multiplier for this item to spawn.");
-            TripleShopSmallChance = SrConfig.Bind<float>(SectionInteractablesChances, "TripleShopSmall", 1, "The multiplier for this item to spawn.");
-            TripleShopLargeChance = SrConfig.Bind<float>(SectionInteractablesChances, "TripleShopLarge", 1, "The multiplier for this item to spawn.");            
-            BarrelChance = SrConfig.Bind<float>(SectionInteractablesChances, "Barrel", 1, "The multiplier for this item to spawn.");
-            // Shrines
-            ShrineHealingChance = SrConfig.Bind<float>(SectionInteractablesChances, "ShrineHealing", 1, "The multiplier for this item to spawn.");            
-            ShrineBloodChance = SrConfig.Bind<float>(SectionInteractablesChances, "ShrineBlood", 1, "The multiplier for this item to spawn.");
-            ShrineBossChance = SrConfig.Bind<float>(SectionInteractablesChances, "ShrineBoss", 1, "The multiplier for this item to spawn.");
-            ShrineChanceChance = SrConfig.Bind<float>(SectionInteractablesChances, "ShrineChance", 1, "The multiplier for this item to spawn.");
-            ShrineCombatChance = SrConfig.Bind<float>(SectionInteractablesChances, "ShrineCombat", 1, "The multiplier for this item to spawn.");
-            ShrineRestackChance = SrConfig.Bind<float>(SectionInteractablesChances, "ShrineRestack", 1, "The multiplier for this item to spawn.");
-            ShrineGoldshoresAccessChance = SrConfig.Bind<float>(SectionInteractablesChances, "ShrineGoldshoresAccess", 1, "The multiplier for this item to spawn.");
-            // Drones
-            BrokenDrone1Chance = SrConfig.Bind<float>(SectionInteractablesChances, "BrokenDrone1", 1, "The multiplier for this item to spawn.");
-            BrokenDrone2Chance = SrConfig.Bind<float>(SectionInteractablesChances, "BrokenDrone2", 1, "The multiplier for this item to spawn.");
-            BrokenMegaDroneChance = SrConfig.Bind<float>(SectionInteractablesChances, "BrokenMegaDrone", 1, "The multiplier for this item to spawn.");
-            BrokenMissileDroneChance = SrConfig.Bind<float>(SectionInteractablesChances, "BrokenMissileDrone", 1, "The multiplier for this item to spawn.");
-            BrokenEquipmentDroneChance = SrConfig.Bind<float>(SectionInteractablesChances, "BrokenEquipmentDrone", 1, "The multiplier for this item to spawn.");
-            BrokenFlameDroneChance = SrConfig.Bind<float>(SectionInteractablesChances, "BrokenFlameDrone", 1, "The multiplier for this item to spawn.");
-            BrokenTurretChance = SrConfig.Bind<float>(SectionInteractablesChances, "BrokenTurret", 1, "The multiplier for this item to spawn.");
-            // Duplicators
-            DuplicatorSmallChance = SrConfig.Bind<float>(SectionInteractablesChances, "DuplicatorSmall", 1, "The multiplier for this item to spawn.");
-            DuplicatorLargeChance = SrConfig.Bind<float>(SectionInteractablesChances, "DuplicatorLarge", 1, "The multiplier for this item to spawn.");
-            DuplicatorMilitaryChance = SrConfig.Bind<float>(SectionInteractablesChances, "DuplicatorMilitary", 1, "The multiplier for this item to spawn.");
-            // Other
-            RadarTowerChance = SrConfig.Bind<float>(SectionInteractablesChances, "RadarTower", 1, "The multiplier for this item to spawn.");
+            // - Chests
+            ChestSmallChance = srConfig.Bind<float>(SectionInteractablesChances, "SmallChest", 1, "The multiplier for this item to spawn.");
+            ChestLargeChance = srConfig.Bind<float>(SectionInteractablesChances, "LargeChest", 1, "The multiplier for this item to spawn.");
+            ChestDamageChance = srConfig.Bind<float>(SectionInteractablesChances, "CategoryDamageChest", 1, "The multiplier for this item to spawn.");
+            ChestHealingChance = srConfig.Bind<float>(SectionInteractablesChances, "CategoryHealingChest", 1, "The multiplier for this item to spawn.");
+            ChestUtilityChance = srConfig.Bind<float>(SectionInteractablesChances, "CategoryUtilityChest", 1, "The multiplier for this item to spawn.");
+            ChestGoldChance = srConfig.Bind<float>(SectionInteractablesChances, "GoldChest", 1, "The multiplier for this item to spawn.");
+            ChestLunarChance = srConfig.Bind<float>(SectionInteractablesChances, "LunarChest", 1, "The multiplier for this item to spawn.");
+            ChestStealthedChance = srConfig.Bind<float>(SectionInteractablesChances, "StealthedChest", 1, "The multiplier for this item to spawn.");
+            EquipmentBarrelChance = srConfig.Bind<float>(SectionInteractablesChances, "EquipmentBarrel", 1, "The multiplier for this item to spawn.");
+            TripleShopSmallChance = srConfig.Bind<float>(SectionInteractablesChances, "TripleShopSmall", 1, "The multiplier for this item to spawn.");
+            TripleShopLargeChance = srConfig.Bind<float>(SectionInteractablesChances, "TripleShopLarge", 1, "The multiplier for this item to spawn.");
+            BarrelChance = srConfig.Bind<float>(SectionInteractablesChances, "Barrel", 1, "The multiplier for this item to spawn.");
+            // - Shrines
+            ShrineHealingChance = srConfig.Bind<float>(SectionInteractablesChances, "ShrineHealing", 1, "The multiplier for this item to spawn.");
+            ShrineBloodChance = srConfig.Bind<float>(SectionInteractablesChances, "ShrineBlood", 1, "The multiplier for this item to spawn.");
+            ShrineBossChance = srConfig.Bind<float>(SectionInteractablesChances, "ShrineBoss", 1, "The multiplier for this item to spawn.");
+            ShrineChanceChance = srConfig.Bind<float>(SectionInteractablesChances, "ShrineChance", 1, "The multiplier for this item to spawn.");
+            ShrineCombatChance = srConfig.Bind<float>(SectionInteractablesChances, "ShrineCombat", 1, "The multiplier for this item to spawn.");
+            ShrineRestackChance = srConfig.Bind<float>(SectionInteractablesChances, "ShrineRestack", 1, "The multiplier for this item to spawn.");
+            ShrineGoldshoresAccessChance = srConfig.Bind<float>(SectionInteractablesChances, "ShrineGoldshoresAccess", 1, "The multiplier for this item to spawn.");
+            // - Drones
+            BrokenDrone1Chance = srConfig.Bind<float>(SectionInteractablesChances, "BrokenDrone1", 1, "The multiplier for this item to spawn.");
+            BrokenDrone2Chance = srConfig.Bind<float>(SectionInteractablesChances, "BrokenDrone2", 1, "The multiplier for this item to spawn.");
+            BrokenMegaDroneChance = srConfig.Bind<float>(SectionInteractablesChances, "BrokenMegaDrone", 1, "The multiplier for this item to spawn.");
+            BrokenMissileDroneChance = srConfig.Bind<float>(SectionInteractablesChances, "BrokenMissileDrone", 1, "The multiplier for this item to spawn.");
+            BrokenEquipmentDroneChance = srConfig.Bind<float>(SectionInteractablesChances, "BrokenEquipmentDrone", 1, "The multiplier for this item to spawn.");
+            BrokenFlameDroneChance = srConfig.Bind<float>(SectionInteractablesChances, "BrokenFlameDrone", 1, "The multiplier for this item to spawn.");
+            BrokenTurretChance = srConfig.Bind<float>(SectionInteractablesChances, "BrokenTurret", 1, "The multiplier for this item to spawn.");
+            // - Duplicators
+            DuplicatorSmallChance = srConfig.Bind<float>(SectionInteractablesChances, "DuplicatorSmall", 1, "The multiplier for this item to spawn.");
+            DuplicatorLargeChance = srConfig.Bind<float>(SectionInteractablesChances, "DuplicatorLarge", 1, "The multiplier for this item to spawn.");
+            DuplicatorMilitaryChance = srConfig.Bind<float>(SectionInteractablesChances, "DuplicatorMilitary", 1, "The multiplier for this item to spawn.");
+            // - Other
+            RadarTowerChance = srConfig.Bind<float>(SectionInteractablesChances, "RadarTower", 1, "The multiplier for this item to spawn.");
         }
     }
 }

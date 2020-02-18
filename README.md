@@ -1,8 +1,10 @@
 ﻿
 # Sacrifice Remix
-Adds a chance for mobs to drop loot and increases the rate at which more difficult mobs spawn
+**Contact: keepingitmods@gmail.com; or Discord: drizzlx#8615**
 
-- Chests are enabled by default, but you can disable them for classic RoR1 Sacrifice gameplay
+Adds a chance for mobs to drop loot and increases the rate at which more difficult mobs spawn.
+
+Chests are enabled by default, but you can disable them for classic RoR1 Sacrifice gameplay.
 
 ## Features
  - Increases the rate at which more difficult mobs spawn
