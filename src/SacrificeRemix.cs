@@ -36,8 +36,8 @@ namespace SacrificeRemix
                 {         
                     // Calculate credit multiplier
                     float additionalPlayers = NetworkUser.readOnlyInstancesList.Count - 1f;                   
-                    float creditMultiplier = configs.MobDifficultyRate.Value / 100;                    
-                    creditMultiplier += additionalPlayers * (configs.MobDifficultyRatePerPlayer.Value / 100);
+                    float creditMultiplier = configs.MobSpawnDifficulty.Value / 100;                    
+                    creditMultiplier += additionalPlayers * (configs.MobSpawnDifficultyPerPlayer.Value / 100);
                     // Apply credit multiplier
                     self.monsterCredit *= creditMultiplier;
                     // Reset timer

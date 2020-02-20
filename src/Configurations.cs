@@ -30,8 +30,8 @@ namespace SacrificeRemix
 
         public ConfigEntry<float>
             // General
-            MobDifficultyRate,
-            MobDifficultyRatePerPlayer,
+            MobSpawnDifficulty,
+            MobSpawnDifficultyPerPlayer,
             // Drops
             NormalDropChance,
             EliteDropChance,
@@ -113,10 +113,10 @@ namespace SacrificeRemix
             IsDeveloperMode = srConfig.Bind<bool>(SectionDeveloper, "IsDeveloperMode", false, "Enable custom logs for debugging.");
             // General
             IsModuleEnabled = srConfig.Bind<bool>(SectionGeneral, "IsModuleEnabled", true, "Enable or disable the module.");
-            MobDifficultyRate = srConfig.Bind<float>(SectionGeneral, "MobDifficultyRate", 150, "The percent rate at which more difficult mobs spawn; 100 is the default RoR2 rate.");
-            MobDifficultyRatePerPlayer = srConfig.Bind<float>(SectionGeneral, "MobDifficultyRatePerPlayer", 0,
-                "Scale MobDifficultyRate for each additional player (0 to disable). " +
-                "Example: MobDifficultyRate 100 + 25 PerPlayer = 100%/125%/150%/175% with 1/2/3/4 players.");
+            MobSpawnDifficulty = srConfig.Bind<float>(SectionGeneral, "MobSpawnDifficulty", 150, "The percent rate at which more difficult mobs spawn; 100 is the default RoR2 rate.");
+            MobSpawnDifficultyPerPlayer = srConfig.Bind<float>(SectionGeneral, "MobSpawnDifficultyPerPlayer", 0,
+                "Scale MobSpawnDifficulty for each additional player (0 to disable). " +
+                "Example: MobSpawnDifficulty 100 + 25 PerPlayer = 100%/125%/150%/175% with 1/2/3/4 players.");
             // Drops
             NormalDropChance = srConfig.Bind<float>(SectionDrops, "NormalDropChance", 4, "Percent chance for normal monsters to drop an item. 0 to disable.");
             EliteDropChance = srConfig.Bind<float>(SectionDrops, "EliteDropChance", 5, "Percent chance for elite monsters to drop an item. 0 to disable.");
