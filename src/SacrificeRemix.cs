@@ -123,7 +123,7 @@ namespace SacrificeRemix
         {
             if (IsModuleEnabled())
             {
-                Chat.AddMessage("SacrificeRemix: Welcome! Please submit feedback on Discord: drizzlx#8615");
+                Chat.AddMessage("Welcome to Sacrifice Remix! I'd love to hear your feedback on Discord: drizzlx#8615");
             }            
         }
 
@@ -132,11 +132,11 @@ namespace SacrificeRemix
             return Configurations.Instance().IsModuleEnabled.Value;
         }
 
-        [ConCommand(commandName = "sr_reload", flags = ConVarFlags.None, helpText = "SacrificeRemix: Reload the config file.")]
+        [ConCommand(commandName = "sr_reload", flags = ConVarFlags.None, helpText = "SacrificeRemix: Reloads the configuration file.")]
         private static void CCReloadConfig(ConCommandArgs args)
         {
             Configurations.Instance().Reload();
-            Console.print("Reloaded SacrificeRemix config file.");
+            Console.print("SacrificeRemix.cfg has been reloaded!");
         }
     }
 }

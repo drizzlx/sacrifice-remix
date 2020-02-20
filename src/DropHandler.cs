@@ -36,7 +36,7 @@ namespace SacrificeRemix
             if (chanceToDropItem <= 0 || !canDropItem)
             {
                 return;
-            }
+            }                       
 
             // Get the attacker body to use transform object
             var transform = attackerBody.transform;
@@ -60,9 +60,16 @@ namespace SacrificeRemix
                 transform.forward * dropForwardVelocityStrength // Z axis                    
             ;
 
-            // And then finally drop it infront of the player
+            // And then finally drop it in front of the player
             PickupDropletController.CreatePickupDroplet(RollItem(victimType, attackerBody.master), position, velocity);
-        }        
+        }
+
+        private Vector3 RandomPointOnSphereEdge(float radius)
+        {
+            var vector = Random.insideUnitSphere.normalized * radius;               
+            
+            return vector;
+        }
 
         private PickupIndex RollItem(string victimType, CharacterMaster master)
         {

@@ -17,22 +17,25 @@ Chests are enabled by default, but you can disable them for classic RoR1 Sacrifi
 - Install [R2API](https://thunderstore.io/package/tristanmcpherson/R2API/) (if you haven't already)
 - Place the mod in the Risk of Rain 2\BepInEx\plugins folder
 
-## Gameplay Configurations
-- Run the game once after installing the mod and then close it to create a config file
-- The config file will be created at Risk of Rain 2\BepInEx\config
-- Open the config and adjust to your liking
-- If your game is running you will need to close it before changes take effect
+## Configurations
+- Run the game once after installing the mod so the config file is created, and then close the game
+- Open SacrificeRemix.cfg in Risk of Rain 2\BepInEx\config
+- If your game is running you will need to close it before changes take effect, or you can run the in-game console command "sr_reload".
 
 ## Special Thanks
-A huge shout-out to the following creators! Some of the features are loosly based on their code.
+A huge shout-out to the following creators! Some of the features are loosely based on their code.
 
-- anticode-403 and MagnusMagnuson
+- anticode-403; MagnusMagnuson
 
 ## Change Log
 
-**Please note: It is recommended to delete your SacrificeRemix configuration file after upgrading to a newer version.**
+1.0.3
+- Configuration file rework
+- Configuration to scale monster spawn difficulty per additional player
+- CloversRerollDrops config is now disabled by default (CloversRerollRarity is still enabled)
 
-1.0.2
+1.0.1-1.0.2
+- Changes to the default drop rates
 
-- Increased the default drop chances
-- Changes to the README
+1.0.0
+- First release

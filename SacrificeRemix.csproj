@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="build\**" />
+    <EmbeddedResource Remove="build\**" />
+    <None Remove="build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>D:\SteamLibrary\steamapps\common\Risk of Rain 2\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
@@ -65,7 +71,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(TargetPath)&quot; &quot;D:\SteamLibrary\steamapps\common\Risk of Rain 2\BepInEx\plugins\drizzlx-SacrificeRemix\&quot;&#xD;&#xA;copy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)build&quot;&#xD;&#xA;copy /Y &quot;$(ProjectDir)README.md&quot; &quot;$(ProjectDir)build&quot;&#xD;&#xA;copy /Y &quot;$(ProjectDir)manifest.json&quot; &quot;$(ProjectDir)build&quot;&#xD;&#xA;copy /Y &quot;$(ProjectDir)icon.png&quot; &quot;$(ProjectDir)build&quot;" />
+    <Exec Command="copy /Y &quot;$(TargetPath)&quot; &quot;D:\SteamLibrary\steamapps\common\Risk of Rain 2\BepInEx\plugins\drizzlx-SacrificeRemix\&quot;&#xD;&#xA;copy /Y &quot;$(TargetPath)&quot; &quot;$(ProjectDir)build&quot;&#xD;&#xA;copy /Y &quot;$(ProjectDir)README.md&quot; &quot;$(ProjectDir)build&quot;&#xD;&#xA;copy /Y &quot;$(ProjectDir)manifest.json&quot; &quot;$(ProjectDir)build&quot;&#xD;&#xA;copy /Y &quot;$(ProjectDir)assets\images\icon.png&quot; &quot;$(ProjectDir)build&quot;" />
   </Target>
 
 </Project>
