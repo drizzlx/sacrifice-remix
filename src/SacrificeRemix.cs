@@ -9,18 +9,34 @@ namespace SacrificeRemix
     [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.0.2")]
     public sealed class SacrificeRemix : BaseUnityPlugin
     {
-        private readonly float minMonsterCreditInterval = 15;
-        private readonly float maxMonsterCreditInterval = 30;
-        private float monsterCreditTimer = 0;
+        // Config file
         private Configurations configs;
+        // Monster credit manipulators { Min, Max }
+        private readonly float[] monsterCreditBase = { 30, 60 };
+        private readonly float[] monsterCreditInterval = { 10, 20 };        
+        private readonly float[] seriesSpawnInterval = { -1, 1 }; // default { 0.1, 1 }        
+        private readonly float[] rerollSpawnInterval = { 2.333f, 3.333f }; // default { 2.333, 4.333 }
+        // Timers
+        private float monsterCreditTimer = 0;
 
-        // Called when loaded by BepInEx.
+        // Called when loaded by BepInEx
         private void Awake()
         {
             // Init configs
-            configs = Configurations.Instance();                  
+            configs = Configurations.Instance();
 
-            // Handler: Monster spawn rate
+            // Handler: Override core variables
+            On.RoR2.CombatDirector.Awake += (orig, self) =>
+            {
+                self.minSeriesSpawnInterval = seriesSpawnInterval[0];
+                self.maxSeriesSpawnInterval = seriesSpawnInterval[1];                
+                self.minRerollSpawnInterval = rerollSpawnInterval[0];
+                self.maxRerollSpawnInterval = rerollSpawnInterval[1];               
+
+                orig(self);
+            };
+
+            // Handler: Monster credit manipulator
             On.RoR2.CombatDirector.Simulate += (orig, self, deltaTime) =>
             {
                 if (!IsModuleEnabled())
@@ -29,24 +45,31 @@ namespace SacrificeRemix
                     return;
                 }
 
-                // Reduce timer
+                // Scale monster credit
                 monsterCreditTimer -= deltaTime;
                 // Check if enough time has passed
                 if (monsterCreditTimer < 0)
-                {         
-                    // Calculate credit multiplier
-                    float additionalPlayers = NetworkUser.readOnlyInstancesList.Count - 1f;                   
-                    float creditMultiplier = configs.MobSpawnDifficulty.Value / 100;                    
-                    creditMultiplier += additionalPlayers * (configs.MobSpawnDifficultyPerPlayer.Value / 100);
-                    // Apply credit multiplier
-                    self.monsterCredit *= creditMultiplier;
+                {                                       
+                    // Set minimum credit for faster spawns
+                    if (self.monsterCredit < monsterCreditBase[0])
+                    {
+                        self.monsterCredit = Random.Range(monsterCreditBase[0], monsterCreditBase[1]);
+                    } else {
+                        // Calculate credit multiplier
+                        float additionalPlayers = NetworkUser.readOnlyInstancesList.Count - 1f;
+                        float creditMultiplier = configs.MobSpawnDifficulty.Value / 100;
+                        creditMultiplier += additionalPlayers * (configs.MobSpawnDifficultyPerPlayer.Value / 100);
+                        // Apply credit multiplier
+                        self.monsterCredit *= creditMultiplier;
+                    }
+
                     // Reset timer
-                    monsterCreditTimer = Random.Range(minMonsterCreditInterval, maxMonsterCreditInterval);
+                    monsterCreditTimer = Random.Range(monsterCreditInterval[0], monsterCreditInterval[1]);
 
                     if (configs.IsDeveloperMode.Value)
                     {
-                        Chat.AddMessage("Spawn Credit: " + self.monsterCredit + "; " + "Rate: " + (creditMultiplier * 100) + "%");
-                    }                 
+                        Chat.AddMessage("Spawn Credit: " + self.monsterCredit);
+                    }
                 }               
 
                 orig(self, deltaTime);
@@ -57,7 +80,7 @@ namespace SacrificeRemix
             {
                 if (!IsModuleEnabled())
                 {
-                    orig.Invoke(self, damageReport);
+                    orig(self, damageReport);
                     return;
                 }
 

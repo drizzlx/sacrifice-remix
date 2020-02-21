@@ -1,7 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using System;
-using System.IO;
 
 namespace SacrificeRemix
 {
@@ -118,8 +116,8 @@ namespace SacrificeRemix
                 "Scale MobSpawnDifficulty for each additional player (0 to disable). " +
                 "Example: MobSpawnDifficulty 100 + 25 PerPlayer = 100%/125%/150%/175% with 1/2/3/4 players.");
             // Drops
-            NormalDropChance = srConfig.Bind<float>(SectionDrops, "NormalDropChance", 4, "Percent chance for normal monsters to drop an item. 0 to disable.");
-            EliteDropChance = srConfig.Bind<float>(SectionDrops, "EliteDropChance", 5, "Percent chance for elite monsters to drop an item. 0 to disable.");
+            NormalDropChance = srConfig.Bind<float>(SectionDrops, "NormalDropChance", 3, "Percent chance for normal monsters to drop an item. 0 to disable.");
+            EliteDropChance = srConfig.Bind<float>(SectionDrops, "EliteDropChance", 4, "Percent chance for elite monsters to drop an item. 0 to disable.");
             BossDropChance = srConfig.Bind<float>(SectionDrops, "BossDropChance", 8, "Percent chance for bosses to drop an item. 0 to disable.");
             CloversRerollDrops = srConfig.Bind<bool>(SectionDrops, "CloversRerollDrops", false, "Can clovers reroll the chance of an item dropping.");
             CloversRerollRarity = srConfig.Bind<bool>(SectionDrops, "CloversRerollRarity", true, "Can clovers reroll the rarity of an item that's dropping (e.g. increased chance for red or green).");
