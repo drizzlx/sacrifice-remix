@@ -9,19 +9,21 @@ namespace SacrificeRemix
     [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.0.2")]
     public sealed class SacrificeRemix : BaseUnityPlugin
     {
+        // Module version
+        public const string Version = "1.0.2";
         // Config file
         private Configurations configs;
         // Monster credit manipulators { Min, Max }
-        private readonly float[] monsterCreditBase = { 30, 60 };
+        private readonly float[] monsterCreditBase = { 15, 30 };
         private readonly float[] monsterCreditInterval = { 10, 20 };        
-        private readonly float[] seriesSpawnInterval = { -1, 1 }; // default { 0.1, 1 }        
+        private readonly float[] seriesSpawnInterval = { 0.1f, 1 }; // default { 0.1, 1 }        
         private readonly float[] rerollSpawnInterval = { 2.333f, 3.333f }; // default { 2.333, 4.333 }
         // Timers
         private float monsterCreditTimer = 0;
 
         // Called when loaded by BepInEx
         private void Awake()
-        {
+        {                        
             // Init configs
             configs = Configurations.Instance();
 
@@ -43,7 +45,7 @@ namespace SacrificeRemix
                 {
                     orig(self, deltaTime);
                     return;
-                }
+                }                                
 
                 // Scale monster credit
                 monsterCreditTimer -= deltaTime;
@@ -51,16 +53,19 @@ namespace SacrificeRemix
                 if (monsterCreditTimer < 0)
                 {                                       
                     // Set minimum credit for faster spawns
-                    if (self.monsterCredit < monsterCreditBase[0])
+                    if (configs.BoostSpawnRates.Value && self.monsterCredit < monsterCreditBase[0])
                     {
                         self.monsterCredit = Random.Range(monsterCreditBase[0], monsterCreditBase[1]);
                     } else {
-                        // Calculate credit multiplier
-                        float additionalPlayers = NetworkUser.readOnlyInstancesList.Count - 1f;
-                        float creditMultiplier = configs.MobSpawnDifficulty.Value / 100;
-                        creditMultiplier += additionalPlayers * (configs.MobSpawnDifficultyPerPlayer.Value / 100);
                         // Apply credit multiplier
-                        self.monsterCredit *= creditMultiplier;
+                        float creditMultiplier = configs.SpawnIntensity.Value;
+                        
+                        if (creditMultiplier > 0)
+                        {
+                            float additionalPlayers = NetworkUser.readOnlyInstancesList.Count - 1f;
+                            creditMultiplier += additionalPlayers * configs.SpawnIntensityPerPlayer.Value;                            
+                            self.monsterCredit *= creditMultiplier;
+                        }                        
                     }
 
                     // Reset timer

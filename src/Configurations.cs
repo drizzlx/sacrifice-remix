@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using System.IO;
 
 namespace SacrificeRemix
 {
@@ -7,7 +8,8 @@ namespace SacrificeRemix
     {
         private static Configurations instance;
         private ConfigFile srConfig;
-        
+        public string configFilePath = Paths.ConfigPath + "\\SacrificeRemix.cfg";
+        // Sections
         public string SectionGeneral = "1.0 General";        
         public string SectionDrops = "2.0 Drops";
         public string SectionDropsNormal = "2.1 Drops.Normal";
@@ -17,9 +19,13 @@ namespace SacrificeRemix
         public string SectionInteractablesChances = "3.1 Interactables.Chances";
         public string SectionDeveloper = "Developer";
 
+        public ConfigEntry<string>
+            ModuleVersion;
+
         public ConfigEntry<bool>
             // General
             IsModuleEnabled,
+            BoostSpawnRates,
             // Developer
             IsDeveloperMode,
             // Drops
@@ -28,8 +34,8 @@ namespace SacrificeRemix
 
         public ConfigEntry<float>
             // General
-            MobSpawnDifficulty,
-            MobSpawnDifficultyPerPlayer,
+            SpawnIntensity,
+            SpawnIntensityPerPlayer,
             // Drops
             NormalDropChance,
             EliteDropChance,
@@ -83,7 +89,7 @@ namespace SacrificeRemix
             RadarTowerChance;
 
         public Configurations()
-        {
+        {            
             Init();
         }
         public static Configurations Instance()
@@ -94,27 +100,42 @@ namespace SacrificeRemix
         public void Reload()
         {
             srConfig.Reload();
-        }                
+        }   
+        
+        private void CheckConfigVersion()
+        {                
+            if (!File.Exists(configFilePath) || File.ReadAllText(configFilePath).Contains("Version = " + SacrificeRemix.Version))
+            {
+                return;
+            }
+
+            string backupPath = configFilePath + ".backup";
+
+            if (File.Exists(backupPath))
+            {
+                File.Delete(backupPath);
+            }
+
+            File.Copy(configFilePath, backupPath);
+            File.Delete(configFilePath);
+        }
 
         private void Init()
-        {            
-            // Custom config file
-            srConfig = new ConfigFile(Paths.ConfigPath + "\\SacrificeRemix.cfg", true);
+        {
+            CheckConfigVersion();
 
-            // TODO add a version config value and check
-            //if (File.Exists(configFilePath))
-            //{
-            //    File.Delete(configFilePath);
-            //}
-
+            // Init config file
+            srConfig = new ConfigFile(configFilePath, true);            
             // Developer            
+            ModuleVersion = srConfig.Bind<string>(SectionDeveloper, "Version", SacrificeRemix.Version, "The configuration file version (do not change).");
             IsDeveloperMode = srConfig.Bind<bool>(SectionDeveloper, "IsDeveloperMode", false, "Enable custom logs for debugging.");
             // General
             IsModuleEnabled = srConfig.Bind<bool>(SectionGeneral, "IsModuleEnabled", true, "Enable or disable the module.");
-            MobSpawnDifficulty = srConfig.Bind<float>(SectionGeneral, "MobSpawnDifficulty", 150, "The percent rate at which more difficult mobs spawn; 100 is the default RoR2 rate.");
-            MobSpawnDifficultyPerPlayer = srConfig.Bind<float>(SectionGeneral, "MobSpawnDifficultyPerPlayer", 0,
-                "Scale MobSpawnDifficulty for each additional player (0 to disable). " +
-                "Example: MobSpawnDifficulty 100 + 25 PerPlayer = 100%/125%/150%/175% with 1/2/3/4 players.");
+            BoostSpawnRates = srConfig.Bind<bool>(SectionGeneral, "BoostSpawnRates", true, "Monsters spawn faster than usual; this is influenced by the SpawnIntensity multiplier.");
+            SpawnIntensity = srConfig.Bind<float>(SectionGeneral, "SpawnIntensity", 1.5f, "A multiplier for the rate at which more difficult monsters spawn; 1 is the default rate.");
+            SpawnIntensityPerPlayer = srConfig.Bind<float>(SectionGeneral, "SpawnIntensityPerPlayer", 0,
+                "Scale SpawnIntensity for each additional player (0 to disable). " +
+                "Example: SpawnIntensity 1 + 0.25 PerPlayer = 100%/125%/150%/175% with 1/2/3/4 players.");
             // Drops
             NormalDropChance = srConfig.Bind<float>(SectionDrops, "NormalDropChance", 3, "Percent chance for normal monsters to drop an item. 0 to disable.");
             EliteDropChance = srConfig.Bind<float>(SectionDrops, "EliteDropChance", 4, "Percent chance for elite monsters to drop an item. 0 to disable.");

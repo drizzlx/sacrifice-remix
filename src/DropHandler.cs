@@ -60,6 +60,8 @@ namespace SacrificeRemix
                 transform.forward * dropForwardVelocityStrength // Z axis                    
             ;
 
+            Util.PlaySound("Play_UI_item_land_tier3", attackerBody.masterObject);
+            Util.PlaySound("Play_UI_item_land_tier3", attackerBody.gameObject);
             // And then finally drop it in front of the player
             PickupDropletController.CreatePickupDroplet(RollItem(victimType, attackerBody.master), position, velocity);
         }
