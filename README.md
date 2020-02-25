@@ -1,41 +1,59 @@
 ﻿
 # Sacrifice Remix
-**Contact: keepingitmods@gmail.com; or Discord: drizzlx#8615**
+**Contact me: keepingitmods@gmail.com; or Discord: drizzlx#8615**.
 
-Adds a chance for mobs to drop loot and increases the rate at which more difficult mobs spawn.
+This is my creative take on the original RoR1 Sacrifice artifact. Monsters will drop loot, spawn faster, and their difficulty scales quicker; in addition to many other features. However, unlike the original Sacrifice, all chests still spawn. I found it really boring to not have chests, so this simply adds extra layers to the game without taking anything from it. Although, if you want to disable chests, you can totally do that!
 
-Chests are enabled by default, but you can disable them for classic RoR1 Sacrifice gameplay.
+Also, please note that this module is a work in progress. My aim is to create action-packed and fast-paced gameplay, in which the added difficulty is balanced out by loot rewards and other fun mechanics. To get the best experience, I highly recommend installing the mods listed below in the *Recommended Modules* section.
 
 ## Features
- - Increases the rate at which more difficult mobs spawn
- - Monsters have a chance to drop a random white/green/red item
- - Chest spawns are enabled by default; they can be disabled if you want classic RoR1 Sacrifice gameplay
- - Simple configurations to control spawn difficulty, drop rates, and which interactable objects spawn
+- Monsters have a chance to drop a random white/green/red item.
+- Faster spawn rates; there's rarely a dull moment even on stage 1.
+- Difficult monsters spawn sooner and more frequently.
+- Chance on kill to summon a temporary attack drone with random items; scales based on your item count.
+- Chest spawns are enabled by default; they can be disabled if you want classic RoR1 Sacrifice gameplay.
+- Simple configurations to control spawn rates, drop rates, and which chests/other interactable objects spawn.
+
+## Recommended Modules
+To get the optimal gameplay experience, I highly recommend installing the following modules:
+- [NoBossNoWait](https://thunderstore.io/package/mistername/NoBossNoWait/) *by mistername*
+- [ShareSuite](https://thunderstore.io/package/FunkFrog-and-Sipondo/ShareSuite/) *by FunkFrog and Sipondo*
+- [BiggerBazaar](https://thunderstore.io/package/MagnusMagnuson/BiggerBazaar/) *by MagnusMagnuson*
 
 ## Installation
 - Install [BepInEx Mod Pack](https://thunderstore.io/package/bbepis/BepInExPack/) (if you haven't already)
 - Install [R2API](https://thunderstore.io/package/tristanmcpherson/R2API/) (if you haven't already)
-- Place the mod in the Risk of Rain 2\BepInEx\plugins folder
+- Place the mod in the *Risk of Rain 2\BepInEx\plugins* folder
 
 ## Configurations
-- Run the game once after installing the mod so the config file is created, and then close the game
-- Open SacrificeRemix.cfg in Risk of Rain 2\BepInEx\config
-- If your game is running you will need to close it before changes take effect, or you can run the in-game console command "sr_reload".
-
-## Special Thanks
-A huge shout-out to the following creators! Some of the features are loosely based on their code.
-
-- anticode-403; MagnusMagnuson
+- Run the game once after installing the mod so the config file is created, and then close the game.
+- Open SacrificeRemix.cfg in *Risk of Rain 2\BepInEx\config*.
+- If your game is running you will need to close it before changes take effect, or you can run the in-game console command *sr_reload*.
 
 ## Change Log
 
-1.0.3
-- Configuration file rework
-- Configuration to scale monster spawn difficulty per additional player
-- CloversRerollDrops config is now disabled by default (CloversRerollRarity is still enabled)
+1.1.0
+- **New Features**
+  - Faster spawn rates; there's rarely a dull moment even on stage 1.
+  - Scale spawn intensity per additional player.
+  - Chance to spawn a temporary attack drone on kill; in the future we may add a variety of drone types.
+  - Added a sound effect for loot drops.
+- **Misc**  
+  - Now the Configuration file is rebuilt when a new Sacrifice Remix version is installed; the previous file is backed up in the same folder.  
+  - Added console command *sr_reload* to reload configuration file while in-game.
+  - Changes to the default spawn/drop rates.
+- **Configurations**
+  - IsModuleEnabled: enable or disable Sacrifice Remix functionality
+  - BoostSpawnRates: enable or disable increased spawn rates
+  - SpawnIntensity: replaces the previous config *MonsterSpawnDifficulty*
+  - SpawnIntensityPerPlayer: scale the *SpawnIntensity* per additional player
+  - SummonDroneChance: the chance to spawn a temporary attack drone on kill
+  - CloversRerollDrops: now disabled by default (CloversRerollRarity is still enabled)
+- **Bug Fixes**
+  - Fixed an issue where loot drops could spawn on ally minion/turret positions; now they will always spawn on the player.
 
 1.0.1-1.0.2
-- Changes to the default drop rates
+- Changes to the default drop rates.
 
 1.0.0
 - First release

@@ -1,6 +1,7 @@
 ﻿using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace SacrificeRemix
 {    
@@ -9,10 +10,30 @@ namespace SacrificeRemix
         private static DropHandler instance;
         private readonly Configurations configs = Configurations.Instance();
 
-        public void DropLoot(CharacterBody victimBody, CharacterBody attackerBody)
-        {
+        public void DropLoot(DamageReport damageReport)
+        {         
+            // If attacker is minion then get the owner
+            CharacterBody attackerBody = damageReport.attackerOwnerMaster ? damageReport.attackerOwnerMaster.GetBody() : damageReport.attackerBody;
+            CharacterBody victimBody = damageReport.victimBody;
+
+            // Only drop loot when a player kills an enemy
+            if (!(attackerBody && victimBody 
+                && attackerBody.isPlayerControlled && damageReport.attackerTeamIndex != damageReport.victimTeamIndex))
+            {
+                return;
+            }
+
+            // Handle summoner rewards
+            var summonDroneChance = configs.SummonDroneChance.Value;
+
+            if (summonDroneChance > 0 && Util.CheckRoll(summonDroneChance))
+            {
+                SummonDrone(attackerBody);
+            }
+
+            // Handle item drops
             float chanceToDropItem;
-            string victimType;           
+            string victimType;
 
             if (victimBody.isElite)
             {
@@ -28,11 +49,11 @@ namespace SacrificeRemix
             {
                 victimType = "normal";
                 chanceToDropItem = configs.NormalDropChance.Value;
-            }
+            }            
 
-            // Check if item should drop
-            var canDropItem = configs.CloversRerollDrops.Value ? Util.CheckRoll(chanceToDropItem, attackerBody.master) : Util.CheckRoll(chanceToDropItem);
-            
+            // Should item drop
+            var canDropItem = configs.CloversRerollDrops.Value ? Util.CheckRoll(chanceToDropItem, attackerBody.master) : Util.CheckRoll(chanceToDropItem);            
+
             if (chanceToDropItem <= 0 || !canDropItem)
             {
                 return;
@@ -60,12 +81,12 @@ namespace SacrificeRemix
                 transform.forward * dropForwardVelocityStrength // Z axis                    
             ;
 
-            Util.PlaySound("Play_UI_item_land_tier3", attackerBody.masterObject);
-            Util.PlaySound("Play_UI_item_land_tier3", attackerBody.gameObject);
-            // And then finally drop it in front of the player
-            PickupDropletController.CreatePickupDroplet(RollItem(victimType, attackerBody.master), position, velocity);
+            // Drop it near the player
+            Util.PlaySound("Play_UI_chest_unlock", attackerBody.gameObject);
+            PickupDropletController.CreatePickupDroplet(RollItem(victimType, attackerBody.master), position, velocity);            
         }
 
+        // TODO
         private Vector3 RandomPointOnSphereEdge(float radius)
         {
             var vector = Random.insideUnitSphere.normalized * radius;               
@@ -75,7 +96,6 @@ namespace SacrificeRemix
 
         private PickupIndex RollItem(string victimType, CharacterMaster master)
         {
-            var configs = Configurations.Instance();
             // Drops
             List<PickupIndex> dropList;
             int itemIndex;
@@ -125,7 +145,70 @@ namespace SacrificeRemix
             itemIndex = Run.instance.treasureRng.RangeInt(0, dropList.Count);
 
             return dropList[itemIndex];
-        }        
+        }
+
+        public CharacterMaster SummonDrone(CharacterBody attackerBody)
+        {
+            var transform = attackerBody.transform;
+
+            // Spawn drone above player position
+            Vector3 position = transform.position + Vector3.up * 3f;
+
+            Util.PlaySound("Play_drone_repair", attackerBody.gameObject);
+
+            CharacterMaster characterMaster = SummonMaster(
+                Resources.Load<GameObject>("Prefabs/CharacterMasters/DroneBackupMaster"), position, transform.rotation, attackerBody);
+            
+            if (characterMaster)
+            {
+                MinionOwnership ownership = characterMaster.GetComponent<MinionOwnership>();
+
+                // Attach to player
+                if (ownership)
+                {
+                    ownership.SetOwner(attackerBody.master);
+                }
+
+                // Random item count
+                var playerItemCount = attackerBody.inventory.GetTotalItemCountOfTier(ItemTier.Tier1) 
+                    + attackerBody.inventory.GetTotalItemCountOfTier(ItemTier.Tier2) 
+                    + attackerBody.inventory.GetTotalItemCountOfTier(ItemTier.Tier3);
+
+                var minRandomItemCount = Mathf.CeilToInt(playerItemCount * 0.2f);
+                var maxRandomItemCount = Mathf.CeilToInt(playerItemCount * 0.5f);
+                var randomItemCount = Random.Range(minRandomItemCount, maxRandomItemCount);  
+                
+                if (randomItemCount < 1 && Random.Range(0, 2) == 1)
+                {
+                    randomItemCount = 1;
+                }
+                                
+                characterMaster.inventory.GiveRandomItems(randomItemCount);
+                
+                // Drone lifetime
+                characterMaster.gameObject.AddComponent<MasterSuicideOnTimer>().lifeTimer = 25f + UnityEngine.Random.Range(0f, 3f);
+            }            
+
+            return characterMaster;
+        }
+
+        private CharacterMaster SummonMaster(GameObject masterPrefab, Vector3 position, Quaternion rotation, CharacterBody player)
+        {
+            if (!NetworkServer.active)
+            {                
+                return null;                
+            }
+
+            return new MasterSummon
+            {
+                masterPrefab = masterPrefab,
+                position = position,
+                rotation = rotation,
+                summonerBodyObject = null,
+                ignoreTeamMemberLimit = false,
+                teamIndexOverride = player.teamComponent.teamIndex
+            }.Perform();
+        }
 
         public static DropHandler Instance()
         {

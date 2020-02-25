@@ -6,15 +6,15 @@ using UnityEngine;
 namespace SacrificeRemix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.0.2")]
+    [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.1.0")]
     public sealed class SacrificeRemix : BaseUnityPlugin
     {
         // Module version
-        public const string Version = "1.0.2";
+        public const string Version = "1.1.0";
         // Config file
         private Configurations configs;
         // Monster credit manipulators { Min, Max }
-        private readonly float[] monsterCreditBase = { 15, 30 };
+        private readonly float[] monsterCreditBase = { 15, 35 };
         private readonly float[] monsterCreditInterval = { 10, 20 };        
         private readonly float[] seriesSpawnInterval = { 0.1f, 1 }; // default { 0.1, 1 }        
         private readonly float[] rerollSpawnInterval = { 2.333f, 3.333f }; // default { 2.333, 4.333 }
@@ -80,24 +80,15 @@ namespace SacrificeRemix
                 orig(self, deltaTime);
             };
 
-            // Handler: Monster loot rewards
+            // Handler: Drop rewards
             On.RoR2.DeathRewards.OnKilledServer += (orig, self, damageReport) =>
             {
-                if (!IsModuleEnabled())
+                if (IsModuleEnabled())
                 {
-                    orig(self, damageReport);
-                    return;
-                }
+                    DropHandler.Instance().DropLoot(damageReport);
+                }                
 
-                CharacterBody attackerBody = damageReport.attackerBody;
-                CharacterBody victimBody = damageReport.victimBody;
-
-                if (attackerBody && victimBody && !victimBody.isPlayerControlled)
-                {
-                    DropHandler.Instance().DropLoot(victimBody, attackerBody);
-                }
-
-                orig.Invoke(self, damageReport);
+                orig(self, damageReport);
             };
 
             // Handler: Interactables

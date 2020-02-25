@@ -10,13 +10,14 @@ namespace SacrificeRemix
         private ConfigFile srConfig;
         public string configFilePath = Paths.ConfigPath + "\\SacrificeRemix.cfg";
         // Sections
-        public string SectionGeneral = "1.0 General";        
-        public string SectionDrops = "2.0 Drops";
-        public string SectionDropsNormal = "2.1 Drops.Normal";
-        public string SectionDropsElite = "2.2 Drops.Elite";
-        public string SectionDropsBoss = "2.3 Drops.Boss";
-        public string SectionInteractables = "3.0 Interactables";
-        public string SectionInteractablesChances = "3.1 Interactables.Chances";
+        public string SectionGeneral = "1.0 General";
+        public string SectionSummoner = "2.0 Summoner";
+        public string SectionDrops = "3.0 Drops";
+        public string SectionDropsNormal = "3.1 Drops.Normal";
+        public string SectionDropsElite = "3.2 Drops.Elite";
+        public string SectionDropsBoss = "3.3 Drops.Boss";
+        public string SectionInteractables = "4.0 Interactables";
+        public string SectionInteractablesChances = "4.1 Interactables.Chances";
         public string SectionDeveloper = "Developer";
 
         public ConfigEntry<string>
@@ -30,7 +31,7 @@ namespace SacrificeRemix
             IsDeveloperMode,
             // Drops
             CloversRerollDrops,
-            CloversRerollRarity;
+            CloversRerollRarity;            
 
         public ConfigEntry<float>
             // General
@@ -49,6 +50,8 @@ namespace SacrificeRemix
             // Drops.Boss
             BossGreenItemChance,
             BossRedItemChance,
+            // Summoner
+            SummonDroneChance,
             // Interactables
             InteractableSpawnMultiplier,
             InteractableCostMultiplier,
@@ -89,7 +92,8 @@ namespace SacrificeRemix
             RadarTowerChance;
 
         public Configurations()
-        {            
+        {
+            CheckConfigVersion();
             Init();
         }
         public static Configurations Instance()
@@ -121,13 +125,11 @@ namespace SacrificeRemix
         }
 
         private void Init()
-        {
-            CheckConfigVersion();
-
+        {            
             // Init config file
             srConfig = new ConfigFile(configFilePath, true);            
             // Developer            
-            ModuleVersion = srConfig.Bind<string>(SectionDeveloper, "Version", SacrificeRemix.Version, "The configuration file version (do not change).");
+            ModuleVersion = srConfig.Bind<string>(SectionDeveloper, "Version", SacrificeRemix.Version, "The configuration file version. Do not modify.");
             IsDeveloperMode = srConfig.Bind<bool>(SectionDeveloper, "IsDeveloperMode", false, "Enable custom logs for debugging.");
             // General
             IsModuleEnabled = srConfig.Bind<bool>(SectionGeneral, "IsModuleEnabled", true, "Enable or disable the module.");
@@ -136,6 +138,8 @@ namespace SacrificeRemix
             SpawnIntensityPerPlayer = srConfig.Bind<float>(SectionGeneral, "SpawnIntensityPerPlayer", 0,
                 "Scale SpawnIntensity for each additional player (0 to disable). " +
                 "Example: SpawnIntensity 1 + 0.25 PerPlayer = 100%/125%/150%/175% with 1/2/3/4 players.");
+            // Summoner
+            SummonDroneChance = srConfig.Bind<float>(SectionSummoner, "SummonDroneChance", 3, "The chance to spawn a temporary drone on kill. 0 to disable.");
             // Drops
             NormalDropChance = srConfig.Bind<float>(SectionDrops, "NormalDropChance", 3, "Percent chance for normal monsters to drop an item. 0 to disable.");
             EliteDropChance = srConfig.Bind<float>(SectionDrops, "EliteDropChance", 4, "Percent chance for elite monsters to drop an item. 0 to disable.");
