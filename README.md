@@ -1,16 +1,16 @@
 ﻿
 # Sacrifice Remix
-**Contact me: keepingitmods@gmail.com; or Discord: drizzlx#8615**.
+*This is my creative take on the original RoR1 Sacrifice artifact:*
 
-This is my creative take on the original RoR1 Sacrifice artifact. Monsters will drop loot, spawn faster, and their difficulty scales quicker; in addition to many other features. However, unlike the original Sacrifice, all chests still spawn. I found it really boring to not have chests, so this simply adds extra layers to the game without taking anything from it. Although, if you want to disable chests, you can totally do that!
+Monsters will drop loot, spawn faster, and be more challenging earlier on - plus some other kick a** features. As a result, the gameplay is fast-paced and packed with consistent action. Although, unlike the original Sacrifice, all chests still spawn. I found it really boring to not have chests, so this simply adds extra layers to the game without taking anything away. However, if you want to disable chests, you can totally do that!
 
-Also, please note that this module is a work in progress. My aim is to create action-packed and fast-paced gameplay, in which the added difficulty is balanced out by loot rewards and other fun mechanics. To get the best experience, I highly recommend installing the mods listed below in the *Recommended Modules* section.
+Also, please note that this module is a work in progress. My goal is to create intense Diablo-style gameplay, in which the added difficulty is balanced out by loot rewards and other fun mechanics. To get the best experience, I highly recommend installing the mods listed below in the *Recommended Modules* section.
 
 ## Features
 - Monsters have a chance to drop a random white/green/red item.
 - Faster spawn rates; there's rarely a dull moment even on stage 1.
 - Difficult monsters spawn sooner and more frequently.
-- Chance on kill to summon a temporary attack drone with random items; scales based on your item count.
+- Chance on kill to summon a temporary attack drone with random items; the item count is based on stages completed.
 - Chest spawns are enabled by default; they can be disabled if you want classic RoR1 Sacrifice gameplay.
 - Simple configurations to control spawn rates, drop rates, and which chests/other interactable objects spawn.
 
@@ -36,7 +36,7 @@ To get the optimal gameplay experience, I highly recommend installing the follow
 - **New Features**
   - Faster spawn rates; there's rarely a dull moment even on stage 1.
   - Scale spawn intensity per additional player.
-  - Chance to spawn a temporary attack drone on kill; in the future we may add a variety of drone types.
+  - Chance on kill to spawn a temporary attack drone with random items (item count based on stages completed); in the future we may add a variety of drone types.
   - Added a sound effect for loot drops.
 - **Misc**  
   - Now the Configuration file is rebuilt when a new Sacrifice Remix version is installed; the previous file is backed up in the same folder.  

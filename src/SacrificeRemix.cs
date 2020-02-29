@@ -14,10 +14,10 @@ namespace SacrificeRemix
         // Config file
         private Configurations configs;
         // Monster credit manipulators { Min, Max }
-        private readonly float[] monsterCreditBase = { 15, 35 };
+        private readonly float[] monsterCreditBase = { 15, 40 };
         private readonly float[] monsterCreditInterval = { 10, 20 };        
         private readonly float[] seriesSpawnInterval = { 0.1f, 1 }; // default { 0.1, 1 }        
-        private readonly float[] rerollSpawnInterval = { 2.333f, 3.333f }; // default { 2.333, 4.333 }
+        private readonly float[] rerollSpawnInterval = { 2.333f, 4.333f }; // default { 2.333, 4.333 }
         // Timers
         private float monsterCreditTimer = 0;
 
@@ -51,11 +51,14 @@ namespace SacrificeRemix
                 monsterCreditTimer -= deltaTime;
                 // Check if enough time has passed
                 if (monsterCreditTimer < 0)
-                {                                       
+                {
+                    float minBaseCredit = monsterCreditBase[0] + (GetStageCount() * configs.SpawnIntensity.Value);
+                    float maxBaseCredit = monsterCreditBase[1] + (GetStageCount() * configs.SpawnIntensity.Value);
+
                     // Set minimum credit for faster spawns
-                    if (configs.BoostSpawnRates.Value && self.monsterCredit < monsterCreditBase[0])
+                    if (configs.BoostSpawnRates.Value && self.monsterCredit < minBaseCredit)
                     {
-                        self.monsterCredit = Random.Range(monsterCreditBase[0], monsterCreditBase[1]);
+                        self.monsterCredit = Random.Range(minBaseCredit, maxBaseCredit);
                     } else {
                         // Apply credit multiplier
                         float creditMultiplier = configs.SpawnIntensity.Value;
@@ -146,9 +149,14 @@ namespace SacrificeRemix
             }            
         }
 
-        private bool IsModuleEnabled()
+        public static bool IsModuleEnabled()
         {
             return Configurations.Instance().IsModuleEnabled.Value;
+        }
+
+        public static int GetStageCount()
+        {
+            return Run.instance.stageClearCount + 1;
         }
 
         [ConCommand(commandName = "sr_reload", flags = ConVarFlags.None, helpText = "SacrificeRemix: Reloads the configuration file.")]

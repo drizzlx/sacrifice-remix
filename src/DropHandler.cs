@@ -14,7 +14,7 @@ namespace SacrificeRemix
         {         
             // If attacker is minion then get the owner
             CharacterBody attackerBody = damageReport.attackerOwnerMaster ? damageReport.attackerOwnerMaster.GetBody() : damageReport.attackerBody;
-            CharacterBody victimBody = damageReport.victimBody;
+            CharacterBody victimBody = damageReport.victimBody;            
 
             // Only drop loot when a player kills an enemy
             if (!(attackerBody && victimBody 
@@ -162,6 +162,13 @@ namespace SacrificeRemix
             if (characterMaster)
             {
                 MinionOwnership ownership = characterMaster.GetComponent<MinionOwnership>();
+                int stageCount = SacrificeRemix.GetStageCount();
+                int minStage = stageCount - 1;
+                int maxStage = stageCount + 2;                
+                int minBaseStats = stageCount - 1;
+                int maxBaseStats = stageCount * 2;
+                int randomItemCount = Random.Range(minStage, maxStage);                
+                int lifeTimerOffset = Random.Range(minStage, maxStage);                
 
                 // Attach to player
                 if (ownership)
@@ -169,24 +176,18 @@ namespace SacrificeRemix
                     ownership.SetOwner(attackerBody.master);
                 }
 
-                // Random item count
-                var playerItemCount = attackerBody.inventory.GetTotalItemCountOfTier(ItemTier.Tier1) 
-                    + attackerBody.inventory.GetTotalItemCountOfTier(ItemTier.Tier2) 
-                    + attackerBody.inventory.GetTotalItemCountOfTier(ItemTier.Tier3);
-
-                var minRandomItemCount = Mathf.CeilToInt(playerItemCount * 0.2f);
-                var maxRandomItemCount = Mathf.CeilToInt(playerItemCount * 0.5f);
-                var randomItemCount = Random.Range(minRandomItemCount, maxRandomItemCount);  
-                
-                if (randomItemCount < 1 && Random.Range(0, 2) == 1)
+                // Random items                               
+                if (randomItemCount > 0)
                 {
-                    randomItemCount = 1;
+                    characterMaster.inventory.GiveRandomItems(randomItemCount);
                 }
-                                
-                characterMaster.inventory.GiveRandomItems(randomItemCount);
-                
+
+                // Base stats
+                characterMaster.inventory.GiveItem(ItemIndex.BoostDamage, Random.Range(minBaseStats, maxBaseStats));
+                characterMaster.inventory.GiveItem(ItemIndex.BoostHp, Random.Range(minBaseStats, maxBaseStats));
+
                 // Drone lifetime
-                characterMaster.gameObject.AddComponent<MasterSuicideOnTimer>().lifeTimer = 25f + UnityEngine.Random.Range(0f, 3f);
+                characterMaster.gameObject.AddComponent<MasterSuicideOnTimer>().lifeTimer = 30f + lifeTimerOffset;
             }            
 
             return characterMaster;
@@ -207,7 +208,8 @@ namespace SacrificeRemix
                 summonerBodyObject = null,
                 ignoreTeamMemberLimit = false,
                 teamIndexOverride = player.teamComponent.teamIndex
-            }.Perform();
+            }
+            .Perform();
         }
 
         public static DropHandler Instance()
