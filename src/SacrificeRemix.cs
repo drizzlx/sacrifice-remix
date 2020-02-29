@@ -14,7 +14,7 @@ namespace SacrificeRemix
         // Config file
         private Configurations configs;
         // Monster credit manipulators { Min, Max }
-        private readonly float[] monsterCreditBase = { 15, 40 };
+        private readonly float[] monsterCreditBase = { 20, 45 };
         private readonly float[] monsterCreditInterval = { 10, 20 };        
         private readonly float[] seriesSpawnInterval = { 0.1f, 1 }; // default { 0.1, 1 }        
         private readonly float[] rerollSpawnInterval = { 2.333f, 4.333f }; // default { 2.333, 4.333 }
@@ -45,40 +45,39 @@ namespace SacrificeRemix
                 {
                     orig(self, deltaTime);
                     return;
-                }                                
+                }
 
-                // Scale monster credit
+                // Update interval
                 monsterCreditTimer -= deltaTime;
-                // Check if enough time has passed
-                if (monsterCreditTimer < 0)
-                {
-                    float minBaseCredit = monsterCreditBase[0] + (GetStageCount() * configs.SpawnIntensity.Value);
-                    float maxBaseCredit = monsterCreditBase[1] + (GetStageCount() * configs.SpawnIntensity.Value);
 
-                    // Set minimum credit for faster spawns
+                // Update credit for faster spawns
+                if (monsterCreditTimer < 0)
+                {                                        
+                    // Credit multiplier
+                    float creditMultiplier = configs.SpawnIntensity.Value;
+                    float additionalPlayers = NetworkUser.readOnlyInstancesList.Count - 1f;
+                    creditMultiplier += additionalPlayers * configs.SpawnIntensityPerPlayer.Value;
+
+                    // Spawn boost min max
+                    float minBaseCredit = monsterCreditBase[0] + (GetStageCount() * creditMultiplier);
+                    float maxBaseCredit = monsterCreditBase[1] + (GetStageCount() * creditMultiplier);
+
+                    // Scale difficulty
+                    self.monsterCredit *= creditMultiplier > 0 ? creditMultiplier : 1;                    
+
                     if (configs.BoostSpawnRates.Value && self.monsterCredit < minBaseCredit)
                     {
-                        self.monsterCredit = Random.Range(minBaseCredit, maxBaseCredit);
-                    } else {
-                        // Apply credit multiplier
-                        float creditMultiplier = configs.SpawnIntensity.Value;
-                        
-                        if (creditMultiplier > 0)
-                        {
-                            float additionalPlayers = NetworkUser.readOnlyInstancesList.Count - 1f;
-                            creditMultiplier += additionalPlayers * configs.SpawnIntensityPerPlayer.Value;                            
-                            self.monsterCredit *= creditMultiplier;
-                        }                        
+                        self.monsterCredit = Random.Range(minBaseCredit, maxBaseCredit) + (self.monsterCredit * 0.2f);
                     }
-
-                    // Reset timer
-                    monsterCreditTimer = Random.Range(monsterCreditInterval[0], monsterCreditInterval[1]);
 
                     if (configs.IsDeveloperMode.Value)
                     {
                         Chat.AddMessage("Spawn Credit: " + self.monsterCredit);
                     }
-                }               
+
+                    // Reset timer
+                    monsterCreditTimer = Random.Range(monsterCreditInterval[0], monsterCreditInterval[1]);                    
+                }
 
                 orig(self, deltaTime);
             };
