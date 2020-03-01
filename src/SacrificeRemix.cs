@@ -144,7 +144,8 @@ namespace SacrificeRemix
         {
             if (IsModuleEnabled())
             {
-                Chat.AddMessage("Welcome to Sacrifice Remix! I'd love to hear your feedback on Discord: drizzlx#8615");
+                Chat.AddMessage("Welcome to Sacrifice Remix!");
+                Chat.AddMessage("Let's be friends. http://bit.ly/drizzlx-discord");
             }            
         }
 
