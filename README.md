@@ -1,12 +1,9 @@
 ﻿
 # Sacrifice Remix
 
-### Let's be friends: [https://discord.gg/UubUgCh](http://bit.ly/drizzlx-discord)
-
-## Tidbits:
+- ### I would love to hear your feedback! Join our community on [Discord](http://bit.ly/drizzlx-discord) (we have snacks).
 - ### It is recommended to install the gameplay mods listed below; see *Recommended Modules* section.
-- ### Default gameplay is balanced for *Monsoon* difficulty
-- ### Feedback is SUPER helpful! Join the [Discord](http://bit.ly/drizzlx-discord) :)
+- ### Default settings are balanced for *Monsoon* difficulty
 - ### Open source on [GitHub](http://bit.ly/sacrifice-remix-github)
 
 ## About
@@ -53,6 +50,11 @@ To get the optimal gameplay experience, I highly recommend installing the follow
 
 ## Change Log
 
+### 1.1.1
+
+- Fixed a bug which would prevent hordes from spawning after the first few stages
+- Update Discord link
+
 ### 1.1.0
 
 - #### New Features
@@ -64,7 +66,7 @@ To get the optimal gameplay experience, I highly recommend installing the follow
 - Now the Configuration file is rebuilt when a new Sacrifice Remix version is installed; the previous file is backed up in the same folder.  
 - Added console command *sr_reload* to reload configuration file while in-game.
 - Changes to the default spawn/drop rates.
-- Reworked custom logic for spawn rate and difficulty, so that it scales based on stages complete.
+- Reworked custom logic for spawn rate and difficulty, so that it scales better.
 - #### Configurations
 - IsModuleEnabled: enable or disable Sacrifice Remix functionality
 - BoostSpawnRates: enable or disable increased spawn rates

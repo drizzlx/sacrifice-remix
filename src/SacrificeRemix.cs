@@ -6,15 +6,15 @@ using UnityEngine;
 namespace SacrificeRemix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.1.0")]
+    [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.1.1")]
     public sealed class SacrificeRemix : BaseUnityPlugin
     {
         // Module version
-        public const string Version = "1.1.0";
+        public const string Version = "1.1.1";
         // Config file
         private Configurations configs;
         // Monster credit manipulators { Min, Max }
-        private readonly float[] monsterCreditBase = { 20, 45 };
+        private readonly float[] monsterCreditBase = { 15, 40 };
         private readonly float[] monsterCreditInterval = { 10, 20 };        
         private readonly float[] seriesSpawnInterval = { 0.1f, 1 }; // default { 0.1, 1 }        
         private readonly float[] rerollSpawnInterval = { 2.333f, 4.333f }; // default { 2.333, 4.333 }
@@ -59,7 +59,7 @@ namespace SacrificeRemix
                     creditMultiplier += additionalPlayers * configs.SpawnIntensityPerPlayer.Value;
 
                     // Spawn boost min max
-                    float minBaseCredit = monsterCreditBase[0] + (GetStageCount() * creditMultiplier);
+                    float minBaseCredit = monsterCreditBase[0];
                     float maxBaseCredit = monsterCreditBase[1] + (GetStageCount() * creditMultiplier);
 
                     // Scale difficulty
@@ -67,7 +67,7 @@ namespace SacrificeRemix
 
                     if (configs.BoostSpawnRates.Value && self.monsterCredit < minBaseCredit)
                     {
-                        self.monsterCredit = Random.Range(minBaseCredit, maxBaseCredit) + (self.monsterCredit * 0.2f);
+                        self.monsterCredit = Random.Range(minBaseCredit, maxBaseCredit);
                     }
 
                     if (configs.IsDeveloperMode.Value)
@@ -144,8 +144,7 @@ namespace SacrificeRemix
         {
             if (IsModuleEnabled())
             {
-                Chat.AddMessage("Welcome to Sacrifice Remix!");
-                Chat.AddMessage("Let's be friends. http://bit.ly/drizzlx-discord");
+                Chat.AddMessage("Welcome to Sacrifice Remix! Don't forget to smoke up <3");            
             }            
         }
 

@@ -1,7 +1,7 @@
 ﻿{
     "name": "SacrificeRemix",
-    "version_number": "1.1.0",
-    "website_url": "http://bit.ly/sacrifice-remix-discord",
+    "version_number": "1.1.1",
+    "website_url": "http://bit.ly/drizzlx-discord",
     "description": "Grind hordes of monsters and collect on-kill rewards in this intense Diablo-like gameplay.",
     "dependencies": [ "bbepis-BepInExPack-3.0.0" , "tristanmcpherson-R2API-2.3.22" ]    
 }
