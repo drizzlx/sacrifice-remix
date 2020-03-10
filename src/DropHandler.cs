@@ -59,8 +59,13 @@ namespace SacrificeRemix
                 return;
             }                       
 
-            // Get the attacker body to use transform object
-            var transform = attackerBody.transform;
+            // Get the character body to use transform object
+            var transform = configs.DropOnMonsterPos.Value ? victimBody.transform : attackerBody.transform;
+
+            if (!transform)
+            {
+                return;
+            }
 
             // Spawn item above player position
             Vector3 position = transform.position + Vector3.up * 3f;
@@ -100,39 +105,63 @@ namespace SacrificeRemix
             List<PickupIndex> dropList;
             int itemIndex;
             // Percent chance to drop
-            float whiteItemChance, greenItemChance, redItemChance;
+            float whiteItemChance, greenItemChance, redItemChance, bossItemChance, equipmentChance;
             // Rarity roll
-            bool greenItemRoll, redItemRoll;
+            bool greenItemRoll, redItemRoll, bossItemRoll, equipmentRoll;
 
             switch (victimType)
             {
                 case "elite":
                     greenItemChance = configs.EliteGreenItemChance.Value;
                     redItemChance = configs.EliteRedItemChance.Value;
+                    bossItemChance = configs.EliteBossItemChance.Value;
+                    equipmentChance = configs.EliteEquipmentChance.Value;
                     break;
                 case "boss":
                     greenItemChance = configs.BossGreenItemChance.Value;
                     redItemChance = configs.BossRedItemChance.Value;
+                    bossItemChance = configs.BossBossItemChance.Value;
+                    equipmentChance = configs.BossEquipmentChance.Value;
                     break;
                 default:
                     greenItemChance = configs.NormalGreenItemChance.Value;
                     redItemChance = configs.NormalRedItemChance.Value;
+                    bossItemChance = configs.NormalBossItemChance.Value;
+                    equipmentChance = configs.NormalEquipmentChance.Value;
                     break;
             }
             
             // Rarity roll
             greenItemRoll = configs.CloversRerollRarity.Value ? Util.CheckRoll(greenItemChance, master) : Util.CheckRoll(greenItemChance);
             redItemRoll = configs.CloversRerollRarity.Value ? Util.CheckRoll(redItemChance, master) : Util.CheckRoll(redItemChance);
+            bossItemRoll = configs.CloversRerollRarity.Value ? Util.CheckRoll(bossItemChance, master) : Util.CheckRoll(bossItemChance);
+            equipmentRoll = configs.CloversRerollRarity.Value ? Util.CheckRoll(equipmentChance, master) : Util.CheckRoll(equipmentChance);
             // Common chance
-            whiteItemChance = 100f - greenItemChance - redItemChance;
+            whiteItemChance = 100f - greenItemChance - redItemChance - bossItemChance - equipmentChance;
+            // Minimum drop type
+            bool minGreen = whiteItemChance <= 0;
+            bool minEquipment = minGreen && greenItemChance <= 0;
+            bool minRed = minEquipment && equipmentChance <= 0;
+            bool minBoss = minRed && redItemChance <= 0;
 
+
+            // Boss item
+            if (bossItemRoll || minBoss)
+            {
+                dropList = Run.instance.availableBossDropList;
+            }
             // Red item
-            if (redItemRoll)
+            else if (redItemRoll || minRed)
             {
                 dropList = Run.instance.availableTier3DropList;
             }
+            // Equipment
+            else if (equipmentRoll || minEquipment)
+            {
+                dropList = Run.instance.availableEquipmentDropList;
+            }
             // Green item
-            else if (whiteItemChance <= 0 || greenItemRoll)
+            else if (greenItemRoll || minGreen)
             {
                 dropList = Run.instance.availableTier2DropList;
             }
