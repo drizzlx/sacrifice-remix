@@ -1,16 +1,15 @@
 ﻿using BepInEx;
-using R2API.Utils;
 using RoR2;
 using UnityEngine;
 
 namespace SacrificeRemix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.1.1")]
+    [BepInPlugin("com.drizzlx.SacrificeRemix", "Sacrifice Remix", "1.1.3")]
     public sealed class SacrificeRemix : BaseUnityPlugin
     {
         // Module version
-        public const string Version = "1.1.1";
+        public const string Version = "1.1.3";
         // Config file
         private Configurations configs;
         // Monster credit manipulators { Min, Max }
@@ -91,51 +90,6 @@ namespace SacrificeRemix
                 }                
 
                 orig(self, damageReport);
-            };
-
-            // Handler: Interactables
-            On.RoR2.ClassicStageInfo.GenerateDirectorCardWeightedSelection += (orig, self, categorySelection) =>
-            {                
-                if (!IsModuleEnabled() || !Interactables.Instance().IsInteractableCategorySelection(categorySelection))
-                {
-                    return orig.Invoke(self, categorySelection);
-                }
-
-                WeightedSelection<DirectorCard> weightedSelection = new WeightedSelection<DirectorCard>(8);
-
-                foreach (DirectorCardCategorySelection.Category category in categorySelection.categories)
-                {
-                    float num = categorySelection.SumAllWeightsInCategory(category);
-
-                    foreach (DirectorCard directorCard in category.cards)
-                    {                   
-                        // True if interactable is enabled
-                        if (Interactables.ApplyConfigModifiers(directorCard))
-                        {
-                            directorCard.spawnCard.directorCreditCost = Mathf.RoundToInt(directorCard.cost * configs.InteractableCostMultiplier.Value);
-
-                            weightedSelection.AddChoice(directorCard, (float)directorCard.selectionWeight / num * category.selectionWeight);
-                        }
-                    }
-                }
-
-                return weightedSelection;
-            };
-
-            // Handler: Interactables spawn multiplier
-            On.RoR2.SceneDirector.PopulateScene += (orig, self) =>
-            {
-                if (!IsModuleEnabled())
-                {
-                    orig.Invoke(self);
-                    return;
-                }
-
-                int num = Reflection.GetFieldValue<int>(self, "interactableCredit");
-                num = Mathf.RoundToInt(num * configs.InteractableSpawnMultiplier.Value);
-
-                Reflection.SetFieldValue(self, "interactableCredit", num);
-                orig.Invoke(self);
             };
         }
 

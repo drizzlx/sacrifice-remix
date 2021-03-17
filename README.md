@@ -1,9 +1,10 @@
 ﻿
 # Sacrifice Remix
 
-- ### I would love to hear your feedback! Join our community on [Discord](http://bit.ly/drizzlx-discord) (we have snacks).
-- ### It is recommended to install the gameplay mods listed below; see *Recommended Modules* section.
-- ### Default settings are balanced for *Monsoon* difficulty
+- ### Please note this mod is NOT an artifact. It's always active and will stack with all artifacts including Sacrifice.
+- ### Have questions? Join our community on [Discord](http://bit.ly/drizzlx-discord) (we have snacks).
+- ### See *Recommended Gameplay* section for details on which artifacts and modules we use.
+- ### Default settings are balanced for *Monsoon* difficulty.
 - ### Open source on [GitHub](http://bit.ly/sacrifice-remix-github)
 
 ## About
@@ -12,7 +13,7 @@
 
 Monsters will drop loot, spawn faster, and be more challenging earlier on - plus some other kick a** features. As a result, the gameplay is fast-paced and packed with consistent action.
 
-Unlike the original Sacrifice, all chests still spawn by default. This simply adds extra layers to the game without taking anything away. However, if you want to disable chests, you can totally do that! It's super customizable and can fit any play style.
+Unlike the original Sacrifice, all chests still spawn by default (unless you play with Sacrifice Artifact). This simply adds extra layers to the game without taking anything away.
 
 Also, please keep in mind that this module is a work in progress. My goal is to create intense *Diablo-like* gameplay, in which the added difficulty is balanced out by kill rewards and other fun mechanics. New features will continue to be added, and the default gameplay experience may change.
 
@@ -25,18 +26,24 @@ Also, please keep in mind that this module is a work in progress. My goal is to 
 - Faster spawn rates; there's hordes of mobs to hack and slash.
 - Difficult monsters spawn more frequently.
 - Chance on kill to summon a temporary attack drone with random items; the duration, item limit, and damage increases each stage.
-- Chest spawns are enabled by default, but can be disabled if you want classic RoR1 Sacrifice gameplay.
 - Highly customizable so it can be modified to fit any play style.
 
-## Recommended Modules
-To get the optimal gameplay experience, I highly recommend installing the following modules:
+## Recommended Gameplay
+To get the optimal gameplay experience, I highly recommend using these artifacts and installing the following modules. This is what the default settings are tweaked for:
+
+#### Artifacts:
+
+- **Artifact of Sacrifice**
+- **Artifact of Swarms**
+- **Artifact of Honor** *(optional)*
+- **Artifact of Soul** *(optional)*
+
+#### Modules:
 
 - **[NoBossNoWait](https://thunderstore.io/package/mistername/NoBossNoWait/)**
-- **[ShareSuite](https://thunderstore.io/package/FunkFrog-and-Sipondo/ShareSuite/)**
+- **[ShareSuite](https://thunderstore.io/package/FunkFrog-and-Sipondo/ShareSuite/)** *(multiplayer)*
 - [BiggerBazaar](https://thunderstore.io/package/MagnusMagnuson/BiggerBazaar/)
-- [BalancedObliterate](https://thunderstore.io/package/mistername/BalancedObliterate/)
 - [RTAutoSprintEx](https://thunderstore.io/package/JohnEdwa/RTAutoSprintEx/)
-- [LunarCoinShareOnPickup](https://thunderstore.io/package/dan8991iel/LunarCoinShareOnPickup/)
 
 ## Installation
 - Install [BepInEx Mod Pack](https://thunderstore.io/package/bbepis/BepInExPack/) (if you haven't already)
@@ -49,6 +56,19 @@ To get the optimal gameplay experience, I highly recommend installing the follow
 - If your game is running you will need to close it before changes take effect, or you can run the in-game console command *sr_reload*.
 
 ## Change Log
+
+### 1.1.3
+
+- Balanced default rates based on the new recommended way to play
+- Removed configs for interactable spawns (this was too buggy and it's no longer needed due to artifacts)
+- Updates for compatibility with latest BepInEx and R2API
+
+### 1.1.2
+
+- Update for artifacts patch
+- Added boss and equipment drops (disabled by default)
+- New config DropOnMonsterPos - if enabled, drops will spawn on the monster position (disabled by default)
+- Balanced default rates
 
 ### 1.1.1
 
