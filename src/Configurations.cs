@@ -16,8 +16,6 @@ namespace SacrificeRemix
         public string SectionDropsNormal = "3.1 Drops.Normal";
         public string SectionDropsElite = "3.2 Drops.Elite";
         public string SectionDropsBoss = "3.3 Drops.Boss";
-        public string SectionInteractables = "4.0 Interactables";
-        public string SectionInteractablesChances = "4.1 Interactables.Chances";
         public string SectionDeveloper = "Developer";
 
         public ConfigEntry<string>
@@ -46,7 +44,7 @@ namespace SacrificeRemix
             NormalGreenItemChance,
             NormalRedItemChance,
             NormalBossItemChance,
-            NormalEquipmentChance,            
+            NormalEquipmentChance,
             // Drops.Elite
             EliteGreenItemChance,
             EliteRedItemChance,
@@ -58,45 +56,7 @@ namespace SacrificeRemix
             BossBossItemChance,
             BossEquipmentChance,
             // Summoner
-            SummonDroneChance,
-            // Interactables
-            InteractableSpawnMultiplier,
-            InteractableCostMultiplier,
-            // Interactables.Chances
-            // - Chests
-            ChestSmallChance,
-            ChestLargeChance,
-            ChestDamageChance,
-            ChestHealingChance,
-            ChestUtilityChance,
-            ChestGoldChance,
-            ChestLunarChance,
-            ChestStealthedChance,
-            EquipmentBarrelChance,
-            TripleShopSmallChance,
-            TripleShopLargeChance,
-            BarrelChance,
-            // - Shrines
-            ShrineHealingChance,
-            ShrineBloodChance,
-            ShrineBossChance,
-            ShrineChanceChance,
-            ShrineCombatChance,
-            ShrineRestackChance,
-            ShrineGoldshoresAccessChance,
-            // - Drones
-            BrokenDrone1Chance,
-            BrokenDrone2Chance,
-            BrokenMegaDroneChance,
-            BrokenMissileDroneChance,
-            BrokenEquipmentDroneChance,
-            BrokenFlameDroneChance,
-            BrokenTurretChance,
-            DuplicatorSmallChance,
-            DuplicatorLargeChance,
-            DuplicatorMilitaryChance,
-            // - Other
-            RadarTowerChance;
+            SummonDroneChance;
 
         public Configurations()
         {
@@ -150,7 +110,7 @@ namespace SacrificeRemix
                 "BoostSpawnRates", true, 
                 "Monsters spawn faster than usual; this is influenced by the SpawnIntensity multiplier.");
             SpawnIntensity = srConfig.Bind<float>(SectionGeneral, 
-                "SpawnIntensity", 1.5f, 
+                "SpawnIntensity", 1.25f, 
                 "A multiplier for the rate at which more difficult monsters spawn; 1 is the default rate.");
             SpawnIntensityPerPlayer = srConfig.Bind<float>(SectionGeneral, 
                 "SpawnIntensityPerPlayer", 0,
@@ -158,17 +118,17 @@ namespace SacrificeRemix
                 "Example: SpawnIntensity 1 + 0.25 PerPlayer = 100%/125%/150%/175% with 1/2/3/4 players.");            
             // Summoner
             SummonDroneChance = srConfig.Bind<float>(SectionSummoner, 
-                "SummonDroneChance", 3, 
+                "SummonDroneChance", 0.5f, 
                 "The chance to spawn a temporary drone on kill. 0 to disable.");
             // Drops
             NormalDropChance = srConfig.Bind<float>(SectionDrops,
-                "NormalDropChance", 3, 
+                "NormalDropChance", 1, 
                 "Percent chance for normal monsters to drop an item. 0 to disable.");
             EliteDropChance = srConfig.Bind<float>(SectionDrops,
-                "EliteDropChance", 4, 
+                "EliteDropChance", 2, 
                 "Percent chance for elite monsters to drop an item. 0 to disable.");
             BossDropChance = srConfig.Bind<float>(SectionDrops,
-                "BossDropChance", 8, 
+                "BossDropChance", 4, 
                 "Percent chance for bosses to drop an item. 0 to disable.");
             CloversRerollDrops = srConfig.Bind<bool>(SectionDrops, 
                 "CloversRerollDrops", false, 
@@ -181,10 +141,10 @@ namespace SacrificeRemix
                 "If enabled, drops will spawn on the monster position. If disabled, drops will spawn on the player position.");
             // Drops.Normal            
             NormalGreenItemChance = srConfig.Bind<float>(SectionDropsNormal, 
-                "GreenItem", 25, 
+                "GreenItem", 27, 
                 "Percent chance for normal monsters to roll uncommon item.");
             NormalRedItemChance = srConfig.Bind<float>(SectionDropsNormal, 
-                "RedItem", 5, 
+                "RedItem", 3, 
                 "Percent chance for normal monsters to roll legendary item.");
             NormalBossItemChance = srConfig.Bind<float>(SectionDropsNormal,
                 "BossItem", 0,
@@ -194,10 +154,10 @@ namespace SacrificeRemix
                 "Percent chance for normal monsters to roll equipment.");
             // Drops.Elite
             EliteGreenItemChance = srConfig.Bind<float>(SectionDropsElite, 
-                "GreenItem", 44, 
+                "GreenItem", 45, 
                 "Percent chance for elite monsters to roll uncommon item.");
             EliteRedItemChance = srConfig.Bind<float>(SectionDropsElite, 
-                "RedItem", 6, 
+                "RedItem", 5, 
                 "Percent chance for elite monsters to roll legendary item.");
             EliteBossItemChance = srConfig.Bind<float>(SectionDropsElite,
                 "BossItem", 0,
@@ -207,10 +167,10 @@ namespace SacrificeRemix
                 "Percent chance for elite monsters to roll equipment.");
             // Drops.Boss
             BossGreenItemChance = srConfig.Bind<float>(SectionDropsBoss, 
-                "GreenItem", 90, 
+                "GreenItem", 62, 
                 "Percent chance for bosses to roll uncommon item.");
             BossRedItemChance = srConfig.Bind<float>(SectionDropsBoss, 
-                "RedItem", 10, 
+                "RedItem", 8, 
                 "Percent chance for bosses to roll legendary item.");
             BossBossItemChance = srConfig.Bind<float>(SectionDropsBoss,
                 "BossItem", 0,
@@ -218,111 +178,6 @@ namespace SacrificeRemix
             BossEquipmentChance = srConfig.Bind<float>(SectionDropsBoss,
                 "Equipment", 0,
                 "Percent chance for bosses to roll equipment.");
-            // Interactables
-            InteractableSpawnMultiplier = srConfig.Bind<float>(SectionInteractables, 
-                "SpawnAmountMultiplier", 1, 
-                "An integer multiplier for the amount of interactables that will spawn in a level. " +
-                "Example: If value is \"2\" and SpawnCostMultiplier is \"1\", then twice as many interactables will spawn.");
-            InteractableCostMultiplier = srConfig.Bind<float>(SectionInteractables, 
-                "SpawnCostMultiplier", 1, 
-                "An integer multiplier applied to the spawn cost of all interactables. " +
-                "Example: If value is \"2\" and SpawnAmountMultiplier is \"1\", then half as many interactables will spawn.");
-            // Interactables.Chances
-            // - Chests
-            ChestSmallChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "SmallChest", 1, 
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ChestLargeChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "LargeChest", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ChestDamageChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "CategoryDamageChest", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ChestHealingChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "CategoryHealingChest", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ChestUtilityChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "CategoryUtilityChest", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ChestGoldChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "GoldChest", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ChestLunarChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "LunarChest", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ChestStealthedChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "StealthedChest", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            EquipmentBarrelChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "EquipmentBarrel", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            TripleShopSmallChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "TripleShopSmall", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            TripleShopLargeChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "TripleShopLarge", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            BarrelChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "Barrel", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            // - Shrines
-            ShrineHealingChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "ShrineHealing", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ShrineBloodChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "ShrineBlood", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ShrineBossChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "ShrineBoss", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ShrineChanceChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "ShrineChance", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ShrineCombatChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "ShrineCombat", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ShrineRestackChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "ShrineRestack", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            ShrineGoldshoresAccessChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "ShrineGoldshoresAccess", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            // - Drones
-            BrokenDrone1Chance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "BrokenDrone1", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            BrokenDrone2Chance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "BrokenDrone2", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            BrokenMegaDroneChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "BrokenMegaDrone", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            BrokenMissileDroneChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "BrokenMissileDrone", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            BrokenEquipmentDroneChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "BrokenEquipmentDrone", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            BrokenFlameDroneChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "BrokenFlameDrone", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            BrokenTurretChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "BrokenTurret", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            // - Duplicators
-            DuplicatorSmallChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "DuplicatorSmall", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            DuplicatorLargeChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "DuplicatorLarge", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            DuplicatorMilitaryChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "DuplicatorMilitary", 1,
-                "The item spawn weight as an integer. 0 to disable spawn.");
-            // - Other
-            RadarTowerChance = srConfig.Bind<float>(SectionInteractablesChances, 
-                "RadarTower", 1, 
-                "The item spawn weight as an integer. 0 to disable spawn.");
         }
     }
 }
